@@ -8,3 +8,25 @@
 - [x] Output the meta-info in JSON format
 
 
+## Usage
+
+```sh
+
+
+    ./storemeta -a <AndroidStoreID>  -i <IOSStoreID>
+
+
+    Example:
+
+    ./storemeta  -a="com.google.android.apps.photos"
+
+    or
+
+    ./storemeta  -i="293622097"
+
+    or
+
+    ./storemeta  -a="com.google.android.apps.photos" -i="293622097"
+
+
+```
