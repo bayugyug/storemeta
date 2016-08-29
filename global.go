@@ -15,11 +15,15 @@ import (
 )
 
 const (
-	usageShowConsole  = "use to enable the output in console"
-	usageAndroidStore = "use for querying the Android App Store"
-	usageIOSStore     = "use for querying the IOS App Store"
-	IOS               = "IOS"
-	ANDROID           = "ANDROID"
+	usageShowConsole     = "use to enable the output in console"
+	usageAndroidStore    = "use for querying the Android App Store"
+	usageIOSStore        = "use for querying the IOS App Store"
+	usageAndroidList     = "use for querying the category list of apps in Android App Store"
+	usageIOSList         = "use for querying the category list of apps in IOS App Store"
+	usageAndroidCategory = "use for querying the list of apps per category in Android App Store"
+	usageIOSCategory     = "use for querying the list of apps per category in IOS App Store"
+	IOS                  = "IOS"
+	ANDROID              = "ANDROID"
 )
 
 type StoreApp struct {
@@ -69,6 +73,13 @@ var (
 	pShowConsole    = true
 	pAndroidStoreId = ""
 	pIOSStoreId     = ""
+
+	pIOSList     = 0
+	pAndroidList = 0
+
+	pIOSCategory     = ""
+	pAndroidCategory = ""
+
 	//envt
 	pEnvVars = map[string]*string{
 		"GMONGERS_LDIR": &pLogDir,
@@ -86,6 +97,8 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 	//recovery
 	initRecov()
+	//re-fmt logger
+	overrideLogger("")
 	//evt
 	initEnvParams()
 	//loggers
@@ -140,10 +153,18 @@ func initEnvParams() {
 	flag.StringVar(&pAndroidStoreId, "a", pAndroidStoreId, usageAndroidStore+" (shorthand)")
 	flag.StringVar(&pIOSStoreId, "ios", pIOSStoreId, usageIOSStore)
 	flag.StringVar(&pIOSStoreId, "i", pIOSStoreId, usageIOSStore+" (shorthand)")
+
+	flag.IntVar(&pIOSList, "list-category-ios", pIOSList, usageIOSList)
+	flag.IntVar(&pAndroidList, "list-category-android", pAndroidList, usageAndroidList)
+
+	flag.StringVar(&pIOSCategory, "category-ios", pIOSCategory, usageIOSCategory)
+	flag.StringVar(&pAndroidCategory, "category-android", pAndroidCategory, usageIOSCategory)
 	flag.Parse()
 
 	//either 1 should be present
-	if pIOSStoreId == "" && pAndroidStoreId == "" {
+	if pIOSStoreId == "" && pAndroidStoreId == "" &&
+		pIOSList == 0 && pAndroidList == 0 &&
+		pIOSCategory == "" && pAndroidCategory == "" {
 		showUsage()
 		os.Exit(0)
 	}
@@ -159,6 +180,7 @@ func initEnvParams() {
 			pStores = append(pStores, &StoreApp{OS: IOS, URL: "https://itunes.apple.com/app/id" + s + "?mt=8", StoreID: s})
 		}
 	}
+
 }
 
 //formatLogger try to init all filehandles for logs
@@ -238,10 +260,17 @@ func showUsage() {
 
 	msg := `
 
+	Example:
+
 		./storemeta -a <AndroidStoreID>  -i <IOSStoreID>
 
+		./storemeta -list-category-android=1
 
-	Example:
+		./storemeta -list-category-ios=1
+
+		./storemeta -category-android=GAME_ACTION
+
+		./storemeta -category-ios=GAMES_ACTION
 
 		./storemeta  -a="com.google.android.apps.photos"
 
@@ -260,7 +289,6 @@ func showUsage() {
 		or
 
 		./storemeta  -i="544007664,535886823,643496868"
-
 
 `
 	fmt.Println(msg)

@@ -28,11 +28,15 @@
 
 $       ./storemeta
 
-
-        ./storemeta -a <AndroidStoreID>  -i <IOSStoreID>
-
-
         Example:
+
+                ./storemeta -list-category-android=1
+
+                ./storemeta -list-category-ios=1
+
+                ./storemeta -category-android=GAME_ACTION
+
+                ./storemeta -category-ios=GAMES_ACTION
 
                 ./storemeta  -a="com.google.android.apps.photos"
 
@@ -279,5 +283,197 @@ $  ./storemeta  -i="544007664,535886823,643496868"
 
 ```
 
+## List the Apps Categories
 
+#### (IOS)
+
+```go
+
+
+$   ./storemeta -list-category-ios=1
+
+        IOS LIST OF CATEGORIES:
+
+        1 BOOKS
+        2 BUSINESS
+        3 EDUCATION
+        4 ENTERTAINMENT
+        5 FINANCE
+        6 FOOD_DRINK
+        7 GAMES
+        8 GAMES_ACTION
+        9 GAMES_ADVENTURE
+        10 GAMES_ARCADE
+        11 GAMES_BOARD
+        12 GAMES_CARD
+        13 GAMES_CASINO
+        14 GAMES_DICE
+        15 GAMES_EDUCATIONAL
+        16 GAMES_FAMILY
+        17 GAMES_MUSIC
+        18 GAMES_PUZZLE
+        19 GAMES_RACING
+        20 GAMES_ROLE_PLAYING
+        21 GAMES_SIMULATION
+        22 GAMES_SPORTS
+        23 GAMES_STRATEGY
+        24 GAMES_TRIVIA
+        25 GAMES_WORD
+        26 HEALTH_FITNESS
+        27 LIFESTYLE
+        28 MAGAZINES_NEWSPAPERS
+        29 MEDICAL
+        30 MUSIC
+        31 NAVIGATION
+        32 NEWS
+        33 PHOTO_VIDEO
+        34 PRODUCTIVITY
+        35 REFERENCE
+        36 SHOPPING
+        37 SOCIAL_NETWORKING
+        38 SPORTS
+        39 TRAVEL
+        40 UTILITIES
+        41 WEATHER
+
+```
+
+
+#### (ANDROID)
+
+```go
+
+$       ./storemeta -list-category-android=1
+
+        ANDROID LIST OF CATEGORIES:
+
+
+        1 ANDROID_WEAR
+        2 BOOKS_AND_REFERENCE
+        3 BUSINESS
+        4 COMICS
+        5 COMMUNICATION
+        6 EDUCATION
+        7 ENTERTAINMENT
+        8 FINANCE
+        9 HEALTH_AND_FITNESS
+        10 LIBRARIES_AND_DEMO
+        11 LIFESTYLE
+        12 MEDIA_AND_VIDEO
+        13 MEDICAL
+        14 MUSIC_AND_AUDIO
+        15 NEWS_AND_MAGAZINES
+        16 PERSONALIZATION
+        17 PHOTOGRAPHY
+        18 PRODUCTIVITY
+        19 SHOPPING
+        20 SOCIAL
+        21 SPORTS
+        22 TOOLS
+        23 TRANSPORTATION
+        24 TRAVEL_AND_LOCAL
+        25 WEATHER
+        26 GAME
+        27 GAME_ACTION
+        28 GAME_ADVENTURE
+        29 GAME_ARCADE
+        30 GAME_BOARD
+        31 GAME_CARD
+        32 GAME_CASINO
+        33 GAME_CASUAL
+        34 GAME_EDUCATIONAL
+        35 GAME_MUSIC
+        36 GAME_PUZZLE
+        37 GAME_RACING
+        38 GAME_ROLE_PLAYING
+        39 GAME_SIMULATION
+        40 GAME_SPORTS
+        41 GAME_STRATEGY
+        42 GAME_TRIVIA
+        43 GAME_WORD
+        44 FAMILY
+        45 FAMILY_AGE_AGE_RANGE1
+        46 FAMILY_AGE_AGE_RANGE2
+        47 FAMILY_AGE_AGE_RANGE3
+        48 FAMILY_ACTION
+        49 FAMILY_BRAINGAMES
+        50 FAMILY_CREATE
+        51 FAMILY_EDUCATION
+        52 FAMILY_MUSICVIDEO
+        53 FAMILY_PRETEND
+
+
+
+```
+
+
+## List the App in the Category
+
+#### (IOS)
+
+```go
+
+$ ./storemeta -category-ios=GAMES_ACTION
+{
+        "preview": "https://itunes.apple.com/us/app/call-of-mini-zombies/id431213733?mt=8",
+        "store_id": "431213733",
+        "category": "GAMES_ACTION"
+}
+{
+        "preview": "https://itunes.apple.com/us/app/gun-club-2-best-in-virtual/id311594640?mt=8",
+        "store_id": "311594640",
+        "category": "GAMES_ACTION"
+}
+{
+        "preview": "https://itunes.apple.com/us/app/ace-fishing-wild-catch/id694972182?mt=8",
+        "store_id": "694972182",
+        "category": "GAMES_ACTION"
+}
+{
+        "preview": "https://itunes.apple.com/us/app/respawnables/id575684686?mt=8",
+        "store_id": "575684686",
+        "category": "GAMES_ACTION"
+}
+{
+        "preview": "https://itunes.apple.com/us/app/swing/id1064078609?mt=8",
+        "store_id": "1064078609",
+        "category": "GAMES_ACTION"
+}
+
+
+
+```
+
+#### (ANDROID)
+
+```go
+$ ./storemeta -category-android=GAME_ACTION
+{
+        "preview": "https://play.google.com/store/apps/details?id=com.squareenixmontreal.hitmansniperandroid",
+        "store_id": "com.squareenixmontreal.hitmansniperandroid",
+        "category": "GAME_ACTION"
+}
+{
+        "preview": "https://play.google.com/store/apps/details?id=com.squareenixmontreal.hitmansniperandroid",
+        "store_id": "com.squareenixmontreal.hitmansniperandroid",
+        "category": "GAME_ACTION",
+        "name": "Pre-ordered"
+}
+{
+        "preview": "https://play.google.com/store/apps/details?id=com.squareenixmontreal.hitmansniperandroid",
+        "store_id": "com.squareenixmontreal.hitmansniperandroid",
+        "category": "GAME_ACTION"
+}
+{
+        "preview": "https://play.google.com/store/apps/details?id=com.squareenixmontreal.hitmansniperandroid",
+        "store_id": "com.squareenixmontreal.hitmansniperandroid",
+        "category": "GAME_ACTION"
+}
+{
+        "preview": "https://play.google.com/store/apps/details?id=com.rockstargames.gtasa",
+        "store_id": "com.rockstargames.gtasa",
+        "category": "GAME_ACTION"
+}
+
+```
 

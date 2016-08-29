@@ -19,9 +19,7 @@ import (
 func b(s string) *bufio.Reader { return bufio.NewReader(strings.NewReader(s)) }
 
 func doIt() {
-	overrideLogger("")
 	//set
-	//memDmp()
 
 	//get task
 	zFlag := make(chan bool)
