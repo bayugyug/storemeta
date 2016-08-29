@@ -85,7 +85,7 @@ func processIt(doneFlg chan bool, wg *sync.WaitGroup, idx int, store *StoreApp) 
 	case ANDROID:
 		appsdata = fmtAndroid(doc, store)
 	}
-	jdata, _ := json.Marshal(appsdata)
+	jdata, _ := json.MarshalIndent(appsdata, "", "\t")
 	//dont leave your friend behind :-)
 	log.Println("JSON: ", string(jdata))
 	//send signal -> DONE
