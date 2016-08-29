@@ -59,7 +59,7 @@ var (
 	warnLog  *log.Logger
 	errorLog *log.Logger
 	//stats
-	pStats *StatsHelper
+	//pStats *StatsHelper
 	//signal flag
 	pStillRunning = true
 
@@ -91,7 +91,7 @@ func init() {
 	//loggers
 	initLogger(os.Stdout, os.Stdout, os.Stderr)
 	//stats
-	pStats = StatsHelperNew()
+	//pStats = StatsHelperNew()
 	//signals
 }
 
