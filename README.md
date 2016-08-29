@@ -2,10 +2,22 @@
 
 
 - [x] This is a simple golang script that will parse the ff:
-            a. Android Play Store meta info
-            b. Apple App Store meta info 
+
+        ** a. Android Play Store meta info
+        ** b. Apple App Store meta info 
 
 - [x] Output the meta-info in JSON format
+
+
+
+## Compile
+
+```sh
+
+    git clone https://github.com/bayugyug/storemeta.git && cd storemeta && ./storemeta
+
+```
+
 
 
 ## Usage
@@ -55,3 +67,5 @@
     {"platform":"IOS","title":"Google Earth on the App StoreGoogle Earth\n              By Google, Inc.\n              \n            \n            \n              \n              View More by This Developer\n              \n            \n            Open iTunes to buy and download apps.","developer":"Google, Inc.","developer-site":"https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewEula?id=293622097","genre":"TRAVEL","description":"Fly around the planet with a swipe of your finger with Google Earth for iPhone, iPad, and iPod touch. Explore distant lands or reacquaint yourself with your childhood home. Search for cities, places, and businesses. Browse layers including roads, borders, places, photos and more.  See the world at street level with integrated Street View.Use the “tour guide” to easily discover exciting new places to explore. With a quick swipe on the tab at the bottom of the screen, you can bring up a selection of virtual tours from around the globe.With 3D imagery, you can now fly through complete 3D recreations of select cities, including San Francisco, Boston, Rome, and others. With every building modeled in 3D, you truly get a sense of flying above the city.","badge":"This app is designed for both iPhone and iPad","rating-total":"446047","rating-per-star":"378,445669","rating-desc":"3 and a half stars, 378 Ratings","rating-value":"3.69312","software-price":"Free","meta-desc":"","file-size":"30.1","content-rating":"Rated 4+","date-published":"2016-05-03 00:00:00","software-version":"7.1.6","software-os":"Requires iOS 5.0 or later. Compatible with iPhone, iPad, and iPod touch.","total-downloads":"44604700","app-url":"https://itunes.apple.com/us/app/google-earth/id293622097?mt=8","app-id":"293622097"}
 
 ```
+
+
