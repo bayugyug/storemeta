@@ -18,7 +18,39 @@ const (
 	usageShowConsole  = "use to enable the output in console"
 	usageAndroidStore = "use for querying the Android App Store"
 	usageIOSStore     = "use for querying the IOS App Store"
+	IOS               = "IOS"
+	ANDROID           = "ANDROID"
 )
+
+type StoreApp struct {
+	StoreID string `json:"store_id,omitempty"`
+	URL     string `json:"url,omitempty"`
+	OS      string `json:"os,omitempty"`
+}
+
+type App struct {
+	Platform        string `json:"platform"`
+	Title           string `json:"title"`
+	Developer       string `json:"developer"`
+	DeveloperSite   string `json:"developer-site"`
+	Genre           string `json:"genre"`
+	Description     string `json:"description"`
+	Badge           string `json:"badge"`
+	RatingTotal     string `json:"rating-total"`
+	RatingPerStar   string `json:"rating-per-star"`
+	RatingDesc      string `json:"rating-desc"`
+	RatingValue     string `json:"rating-value"`
+	SoftwarePrice   string `json:"software-price"`
+	MetaDesc        string `json:"meta-desc"`
+	FileSize        string `json:"file-size"`
+	ContentRating   string `json:"content-rating"`
+	DatePublished   string `json:"date-published"`
+	SoftwareVersion string `json:"software-version"`
+	SoftwareOs      string `json:"software-os"`
+	TotalDownloads  string `json:"total-downloads"`
+	AppURL          string `json:"app-url"`
+	AppID           string `json:"app-id"`
+}
 
 var (
 	pLogDir = "."
@@ -41,8 +73,9 @@ var (
 	pEnvVars = map[string]*string{
 		"GMONGERS_LDIR": &pLogDir,
 	}
-	pStores = map[string]string{}
 )
+
+var pStores []*StoreApp
 
 type logOverride struct {
 	Prefix string `json:"prefix,omitempty"`
@@ -60,7 +93,6 @@ func init() {
 	//stats
 	pStats = StatsHelperNew()
 	//signals
-	log.Println("Ver:", pVersion)
 }
 
 //initRecov is for dumpIng segv in
@@ -114,6 +146,12 @@ func initEnvParams() {
 	if pIOSStoreId == "" && pAndroidStoreId == "" {
 		showUsage()
 		os.Exit(0)
+	}
+	if pAndroidStoreId != "" {
+		pStores = append(pStores, &StoreApp{OS: ANDROID, URL: "https://play.google.com/store/apps/details?id=" + pAndroidStoreId + "&hl=en", StoreID: pAndroidStoreId})
+	}
+	if pIOSStoreId != "" {
+		pStores = append(pStores, &StoreApp{OS: IOS, URL: "https://itunes.apple.com/app/id" + pIOSStoreId + "?mt=8", StoreID: pIOSStoreId})
 	}
 }
 
@@ -179,7 +217,8 @@ func dumpIF(format string, s ...interface{}) {
 
 //Write override the log.print
 func (w logOverride) Write(bytes []byte) (int, error) {
-	return fmt.Print(w.Prefix + time.Now().UTC().Format("2006-01-02 15:04:05.999") + " " + string(bytes))
+	//return fmt.Print(w.Prefix + time.Now().UTC().Format("2006-01-02 15:04:05.999") + " " + string(bytes))
+	return fmt.Print(string(bytes))
 }
 
 //overrideLogger reset the log.print to customized
