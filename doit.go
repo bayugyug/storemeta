@@ -26,6 +26,12 @@ func doIt() {
 	zwg := new(sync.WaitGroup)
 
 	//get task
+	uFlag := make(chan bool)
+	uwg := new(sync.WaitGroup)
+	uwg.Add(1)
+	go showResults(uFlag, uwg)
+
+	//get task
 	for idx, url := range pStores {
 		//var w io.Writer
 		//var pg = 0
@@ -39,9 +45,12 @@ func doIt() {
 
 	zwg.Wait()
 	close(zFlag)
+	close(pAppsData)
 
 	//stats
-	//memDmp()
+	uwg.Wait()
+	close(uFlag)
+
 }
 
 func processIt(doneFlg chan bool, wg *sync.WaitGroup, idx int, store *StoreApp) {
@@ -83,9 +92,8 @@ func processIt(doneFlg chan bool, wg *sync.WaitGroup, idx int, store *StoreApp) 
 	case ANDROID:
 		appsdata = fmtAndroid(doc, store)
 	}
-	jdata, _ := json.MarshalIndent(appsdata, "", "\t")
-	//dont leave your friend behind :-)
-	log.Println(string(jdata))
+	pAppsData <- appsdata
+
 	//send signal -> DONE
 	doneFlg <- true
 }
@@ -441,4 +449,38 @@ func getResult(url string) (int, string) {
 	}
 	//give
 	return res.StatusCode, string(robots)
+}
+
+func showResults(doneFlg chan bool, wg *sync.WaitGroup) {
+
+	go func() {
+		for {
+			select {
+			//wait till doneFlag has value ;-)
+			case <-doneFlg:
+				//done already ;-)
+				wg.Done()
+				return
+			}
+		}
+	}()
+
+	var applist []*App
+	for {
+		row, more := <-pAppsData
+		if !more {
+			break
+		}
+		//sig-check
+		if !pStillRunning {
+			log.Println("Signal detected ...")
+			break
+		}
+		applist = append(applist, row)
+	}
+	jdata, _ := json.MarshalIndent(applist, "", "\t")
+	//dont leave your friend behind :-)
+	log.Println(string(jdata))
+	//send signal -> DONE
+	doneFlg <- true
 }

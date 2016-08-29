@@ -86,6 +86,7 @@ var (
 	}
 )
 
+var pAppsData = make(chan *App)
 var pStores []*StoreApp
 
 type logOverride struct {
