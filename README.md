@@ -414,66 +414,67 @@ $       ./storemeta -list-category-android=1
 ```go
 
 $ ./storemeta -category-ios=GAMES_ACTION
-{
-        "preview": "https://itunes.apple.com/us/app/call-of-mini-zombies/id431213733?mt=8",
-        "store_id": "431213733",
-        "category": "GAMES_ACTION"
-}
-{
-        "preview": "https://itunes.apple.com/us/app/gun-club-2-best-in-virtual/id311594640?mt=8",
-        "store_id": "311594640",
-        "category": "GAMES_ACTION"
-}
-{
-        "preview": "https://itunes.apple.com/us/app/ace-fishing-wild-catch/id694972182?mt=8",
-        "store_id": "694972182",
-        "category": "GAMES_ACTION"
-}
-{
-        "preview": "https://itunes.apple.com/us/app/respawnables/id575684686?mt=8",
-        "store_id": "575684686",
-        "category": "GAMES_ACTION"
-}
-{
-        "preview": "https://itunes.apple.com/us/app/swing/id1064078609?mt=8",
-        "store_id": "1064078609",
-        "category": "GAMES_ACTION"
-}
-
-
+[        {
+                "preview": "https://itunes.apple.com/us/app/call-of-mini-zombies/id431213733?mt=8",
+                "store_id": "431213733",
+                "category": "GAMES_ACTION"
+        },
+        {
+                "preview": "https://itunes.apple.com/us/app/gun-club-2-best-in-virtual/id311594640?mt=8",
+                "store_id": "311594640",
+                "category": "GAMES_ACTION"
+        },
+        {
+                "preview": "https://itunes.apple.com/us/app/ace-fishing-wild-catch/id694972182?mt=8",
+                "store_id": "694972182",
+                "category": "GAMES_ACTION"
+        },
+        {
+                "preview": "https://itunes.apple.com/us/app/respawnables/id575684686?mt=8",
+                "store_id": "575684686",
+                "category": "GAMES_ACTION"
+        },
+        {
+                "preview": "https://itunes.apple.com/us/app/swing/id1064078609?mt=8",
+                "store_id": "1064078609",
+                "category": "GAMES_ACTION"
+        }
+]
 
 ```
 
 #### (ANDROID)
 
 ```go
-$ ./storemeta -category-android=GAME_ACTION
-{
-        "preview": "https://play.google.com/store/apps/details?id=com.squareenixmontreal.hitmansniperandroid",
-        "store_id": "com.squareenixmontreal.hitmansniperandroid",
-        "category": "GAME_ACTION"
-}
-{
-        "preview": "https://play.google.com/store/apps/details?id=com.squareenixmontreal.hitmansniperandroid",
-        "store_id": "com.squareenixmontreal.hitmansniperandroid",
-        "category": "GAME_ACTION",
-        "name": "Pre-ordered"
-}
-{
-        "preview": "https://play.google.com/store/apps/details?id=com.squareenixmontreal.hitmansniperandroid",
-        "store_id": "com.squareenixmontreal.hitmansniperandroid",
-        "category": "GAME_ACTION"
-}
-{
-        "preview": "https://play.google.com/store/apps/details?id=com.squareenixmontreal.hitmansniperandroid",
-        "store_id": "com.squareenixmontreal.hitmansniperandroid",
-        "category": "GAME_ACTION"
-}
-{
-        "preview": "https://play.google.com/store/apps/details?id=com.rockstargames.gtasa",
-        "store_id": "com.rockstargames.gtasa",
-        "category": "GAME_ACTION"
-}
+$ ./storemeta -category-android=FAMILY_AGE_AGE_RANGE1
+[
+        {
+                "preview": "https://play.google.com/store/apps/details?id=com.disney.PaintAndPlay_goo",
+                "store_id": "com.disney.PaintAndPlay_goo",
+                "category": "FAMILY_AGE_AGE_RANGE1"
+        },
+        {
+                "preview": "https://play.google.com/store/apps/details?id=com.intellijoy.android.shapes",
+                "store_id": "com.intellijoy.android.shapes",
+                "category": "FAMILY_AGE_AGE_RANGE1"
+        },
+        {
+                "preview": "https://play.google.com/store/apps/details?id=com.intellijoy.android.shapes",
+                "store_id": "com.intellijoy.android.shapes",
+                "category": "FAMILY_AGE_AGE_RANGE1"
+        },
+        {
+                "preview": "https://play.google.com/store/apps/details?id=com.intellijoy.android.shapes",
+                "store_id": "com.intellijoy.android.shapes",
+                "category": "FAMILY_AGE_AGE_RANGE1"
+        },
+        {
+                "preview": "https://play.google.com/store/apps/details?id=com.intellijoy.android.shapes",
+                "store_id": "com.intellijoy.android.shapes",
+                "category": "FAMILY_AGE_AGE_RANGE1"
+        }
+]
+
 
 ```
 
