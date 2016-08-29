@@ -30,10 +30,10 @@ type StoreApp struct {
 
 type App struct {
 	Platform        string `json:"platform"`
-	Title           string `json:"title"`
-	Developer       string `json:"developer"`
-	DeveloperSite   string `json:"developer-site"`
+	AppURL          string `json:"app-url"`
+	AppID           string `json:"app-id"`
 	Genre           string `json:"genre"`
+	Title           string `json:"title"`
 	Description     string `json:"description"`
 	Badge           string `json:"badge"`
 	RatingTotal     string `json:"rating-total"`
@@ -48,8 +48,8 @@ type App struct {
 	SoftwareVersion string `json:"software-version"`
 	SoftwareOs      string `json:"software-os"`
 	TotalDownloads  string `json:"total-downloads"`
-	AppURL          string `json:"app-url"`
-	AppID           string `json:"app-id"`
+	Developer       string `json:"developer"`
+	DeveloperSite   string `json:"developer-site"`
 }
 
 var (
@@ -148,10 +148,16 @@ func initEnvParams() {
 		os.Exit(0)
 	}
 	if pAndroidStoreId != "" {
-		pStores = append(pStores, &StoreApp{OS: ANDROID, URL: "https://play.google.com/store/apps/details?id=" + pAndroidStoreId + "&hl=en", StoreID: pAndroidStoreId})
+		sts := strings.Split(pAndroidStoreId, ",")
+		for _, s := range sts {
+			pStores = append(pStores, &StoreApp{OS: ANDROID, URL: "https://play.google.com/store/apps/details?id=" + s + "&hl=en", StoreID: s})
+		}
 	}
 	if pIOSStoreId != "" {
-		pStores = append(pStores, &StoreApp{OS: IOS, URL: "https://itunes.apple.com/app/id" + pIOSStoreId + "?mt=8", StoreID: pIOSStoreId})
+		sts := strings.Split(pIOSStoreId, ",")
+		for _, s := range sts {
+			pStores = append(pStores, &StoreApp{OS: IOS, URL: "https://itunes.apple.com/app/id" + s + "?mt=8", StoreID: s})
+		}
 	}
 }
 
@@ -246,6 +252,14 @@ func showUsage() {
 		or
 
 		./storemeta  -a="com.google.android.apps.photos" -i="293622097"
+
+		or
+
+		./storemeta  -a="com.google.android.apps.plus,com.google.android.launcher,com.sphero.sprk"
+
+		or
+
+		./storemeta  -i="544007664,535886823,643496868"
 
 
 `

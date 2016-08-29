@@ -26,32 +26,43 @@
 
 ```sh
 
-
-    ./storemeta -a <AndroidStoreID>  -i <IOSStoreID>
-
-
-    Example:
-
-    ./storemeta  -a="com.google.android.apps.photos"
-
-    or
-
-    ./storemeta  -i="293622097"
-
-    or
-
-    ./storemeta  -a="com.google.android.apps.photos" -i="293622097"
+$       ./storemeta
 
 
+        ./storemeta -a <AndroidStoreID>  -i <IOSStoreID>
+
+
+        Example:
+
+                ./storemeta  -a="com.google.android.apps.photos"
+
+                or
+
+                ./storemeta  -i="293622097"
+
+                or
+
+                ./storemeta  -a="com.google.android.apps.photos" -i="293622097"
+
+                or
+
+                ./storemeta  -a="com.google.android.apps.plus,com.google.android.launcher,com.sphero.sprk"
+
+                or
+
+                ./storemeta  -i="544007664,535886823,643496868"
 ```
 
 
 ## Sample (Android)
 
+
+
+#### Simple
 ```go
 
 
-    ./storemeta  -a="com.google.android.apps.photos"
+$    ./storemeta  -a="com.google.android.apps.photos"
     {
         "platform": "ANDROID",
         "title": "Google Photos - Android Apps on Google Play",
@@ -77,12 +88,93 @@
    }
 ```
 
+
+#### Multiple
+```go
+
+$       ./storemeta  -a="com.google.android.apps.plus,com.google.android.launcher,com.sphero.sprk"
+{
+        "platform": "ANDROID",
+        "title": "Google+ - Android Apps on Google Play",
+        "developer": "Google Inc.",
+        "developer-site": "https://www.google.com/url?q=http://www.google.com/policies/privacy\u0026sa=D\u0026usg=AFQjCNE7y6nm7TcHvct7CDJRmWrYBHvMEQ",
+        "genre": "SOCIAL",
+        "description": "Discover amazing things created by passionate people.  • Explore your interests • Join Communities of people around any topic • Group things you love into Collections • Build a home stream filled with amazing content",
+        "badge": "Top Developer",
+        "rating-total": "2744541",
+        "rating-per-star": "1698276,467070,234151,94514,250523",
+        "rating-desc": "Rated 4.2 stars out of five stars\nRated 4 stars out of five stars\nRated 2 stars out of five stars\nRated 1 stars out of five stars\nRated 3 stars out of five stars\nRated 5 stars out of five stars\nRated 4.0 stars out of five stars\nRated 4.5 stars out of five stars\nRated 4.3 stars out of five stars\nRated 3.9 stars out of five stars\nRated 4.4 stars out of five stars\nRated 3.7 stars out of five stars\nRated 4.1 stars out of five stars",
+        "rating-value": "4.190752983093262",
+        "software-price": "0",
+        "meta-desc": "\r\n Updated August 19, 2016 \r\n Size    Varies with device   \r\n Installs   1,000,000,000 - 5,000,000,000   \r\n Current Version    Varies with device   \r\n Requires Android    Varies with device     \r\n Content Rating Rated for 12+ Parental Guidance Recommended Learn more  \r\n  Interactive Elements  Users Interact, Shares Location \r\n Permissions  View details  \r\n Report  Flag as inappropriate  \r\n  Offered By  Google Inc. \r\n  Developer    Visit website   Email apps-help@google.com   Privacy Policy  1600 Amphitheatre Parkway, Mountain View 94043  ",
+        "file-size": "",
+        "content-rating": "Rated for 12+",
+        "date-published": "",
+        "software-version": "Varies with device",
+        "software-os": "Varies with device",
+        "total-downloads": "3000000000",
+        "app-url": "https://play.google.com/store/apps/details?id=com.google.android.apps.plus\u0026hl=en",
+        "app-id": "com.google.android.apps.plus"
+}
+{
+        "platform": "ANDROID",
+        "title": "SPRK Lightning Lab for Sphero - Android Apps on Google Play",
+        "developer": "Sphero",
+        "developer-site": "https://www.google.com/url?q=http://sphero.com/privacy\u0026sa=D\u0026usg=AFQjCNEZMVaQnl-ALYvWQt4GzazDqrGPuw",
+        "genre": "EDUCATION",
+        "description": "This is SPRK Lightning Lab. Your hub to create, contribute, and learn with Sphero robots.Simple for beginners yet sophisticated enough for seasoned programmers, Lightning Lab empowers anyone to program their robot. The visual block-based building app makes learning the basic principles of programming approachable and fun. Drag and drop actions, controls, operators, and more to learn how your Sphero works. The written code you create can then be viewed right beside your block sequence for a more advanced understanding of our C-based language. Join the growing community of makers, students, instructors, and parents – all learning on the same social platform. Share your creations, comment on posted activities, and collaborate with other users around the globe to innovate the world of education. Join Lightning Lab and be a part of something bigger.Program your robotTransform ideas into code by using visual blocks that represent our C-based language, Oval. Double tap on a block to learn what it does. Complete awesome activitiesProgram a painting. Navigate a maze. Mimic the solar system. Swim across the water. Have a dance party… The only limit is your imagination. Take a driveNeed a brain break? Go Drive and play.“There were plenty of educational robots on the market, but Sphero stood out for the simplicity of its coding; moreover, unlike robotic cars, tanks, or dolls, a ball was equally inviting to boys and girls.” - The New Yorker“Simply put, kids could not only learn about programming, but also have fun doing so.” - Engadget Learning is evolving. Get on the ball. Order a SPRK+ robot today at sphero.com.*Supported Robots: SPRK+, SPRK Edition, Sphero 2.0, and Ollie**Supported Languages: English, French, Italian, German, Spanish, Chinese Simplified, Chinese Traditional, Japanese and Korean",
+        "badge": "",
+        "rating-total": "381",
+        "rating-per-star": "239,61,15,15,51",
+        "rating-desc": "Rated 4.1 stars out of five stars\nRated 4 stars out of five stars\nRated 5 stars out of five stars\nRated 1 stars out of five stars\nRated 2 stars out of five stars\nRated 3 stars out of five stars\nRated 3.2 stars out of five stars\nRated 3.5 stars out of five stars\nRated 4.2 stars out of five stars\nRated 2.9 stars out of five stars\nRated 2.2 stars out of five stars\nRated 4.3 stars out of five stars\nRated 3.1 stars out of five stars\nRated 4.4 stars out of five stars\nRated 3.9 stars out of five stars\nRated 4.5 stars out of five stars\nRated 3.4 stars out of five stars\nRated 3.7 stars out of five stars\nRated 3.8 stars out of five stars\nRated 3.0 stars out of five stars\nRated 3.3 stars out of five stars",
+        "rating-value": "4.107611656188965",
+        "software-price": "0",
+        "meta-desc": "\r\n Updated July 26, 2016 \r\n Size  49M   \r\n Installs   10,000 - 50,000   \r\n Current Version  2.0.0   \r\n Requires Android       4.4 and up     \r\n Content Rating Rated for 3+  Learn more  \r\n  Interactive Elements  Users Interact \r\n Permissions  View details  \r\n Report  Flag as inappropriate  \r\n  Offered By  Sphero \r\n  Developer    Visit website   Email support@sphero.com   Privacy Policy  4772 Walnut St\nSte. 206\nBoulder, CO 80301  ",
+        "file-size": "49",
+        "content-rating": "Rated for 3+",
+        "date-published": "",
+        "software-version": "2.0.0",
+        "software-os": "4.4 and up",
+        "total-downloads": "30000",
+        "app-url": "https://play.google.com/store/apps/details?id=com.sphero.sprk\u0026hl=en",
+        "app-id": "com.sphero.sprk"
+}
+{
+        "platform": "ANDROID",
+        "title": "Google Now Launcher - Android Apps on Google Play",
+        "developer": "Google Inc.",
+        "developer-site": "https://www.google.com/url?q=http://www.google.com/policies/privacy\u0026sa=D\u0026usg=AFQjCNE7y6nm7TcHvct7CDJRmWrYBHvMEQ",
+        "genre": "TOOLS",
+        "description": "Upgrade the launcher on your Android device for a fast, clean home screen that puts Google Now just a swipe away.Available on all devices with Android 4.1 (Jelly Bean) or higher.Key features:• Swipe right from your Home screen to see Google Now cards that bring you just the right information, at just the right time.• Quick access to Search from every Home screen.• Say “Ok Google” to search with your voice, or tell your phone what to do: send a text message, get directions, play a song, and much more.• A-Z apps list, with fast scrolling and quick searching of apps on your device and the Play Store.• App Suggestions bring the app you’re looking for to the top of your A-Z list.",
+        "badge": "Top Developer",
+        "rating-total": "706588",
+        "rating-per-star": "451198,122876,57130,27364,48020",
+        "rating-desc": "Rated 4.3 stars out of five stars\nRated 5 stars out of five stars\nRated 2 stars out of five stars\nRated 3 stars out of five stars\nRated 1 stars out of five stars\nRated 4 stars out of five stars\nRated 4.4 stars out of five stars\nRated 4.1 stars out of five stars\nRated 4.0 stars out of five stars\nRated 4.2 stars out of five stars\nRated 3.7 stars out of five stars\nRated 2.6 stars out of five stars\nRated 4.5 stars out of five stars\nRated 3.9 stars out of five stars",
+        "rating-value": "4.276370525360107",
+        "software-price": "0",
+        "meta-desc": "\r\n Updated November 2, 2015 \r\n Size  15M   \r\n Installs   50,000,000 - 100,000,000   \r\n Current Version  1.3.large   \r\n Requires Android       4.1 and up     \r\n Content Rating Rated for 3+  Learn more  \r\n  Interactive Elements  Shares Location \r\n Permissions  View details  \r\n Report  Flag as inappropriate  \r\n  Offered By  Google Inc. \r\n  Developer    Visit website   Email apps-help@google.com   Privacy Policy  1600 Amphitheatre Parkway, Mountain View 94043  ",
+        "file-size": "15",
+        "content-rating": "Rated for 3+",
+        "date-published": "",
+        "software-version": "1.3.large",
+        "software-os": "4.1 and up",
+        "total-downloads": "75000000",
+        "app-url": "https://play.google.com/store/apps/details?id=com.google.android.launcher\u0026hl=en",
+        "app-id": "com.google.android.launcher"
+}
+
+
+```
+
+
+
 ## Sample (IOS)
 
+#### Simple
 ```go
 
 
-    ./storemeta  -i="293622097"
+$   ./storemeta  -i="293622097"
 
     {
         "platform": "IOS",
@@ -107,6 +199,84 @@
         "app-url": "https://itunes.apple.com/us/app/google-earth/id293622097?mt=8",
         "app-id": "293622097"
     }
+```
+
+
+#### Multiple
+```go
+
+$  ./storemeta  -i="544007664,535886823,643496868"
+{
+        "platform": "IOS",
+        "title": "YouTube on the App StoreYouTube\n              By Google, Inc.\n              Essentials\n            \n            \n              \n              View More by This Developer\n              \n            \n            Open iTunes to buy and download apps.",
+        "developer": "Google, Inc.",
+        "developer-site": "https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewEula?id=544007664",
+        "genre": "Photo \u0026 Video",
+        "description": "Get the official YouTube app for iPhone and iPad.See what the world is watching in music, gaming, entertainment, news and more. Explore the hottest videos on YouTube with the new trending tab. Subscribe to channels, share with friends, edit and upload videos, and watch on any device.With a new design, you can now have fun exploring videos you love more easily and quickly than before. Just tap an icon or swipe to switch between recommended videos, the trending tab, your subscriptions, and your account.You can also subscribe to your favorite channels, create playlists, edit and upload videos, check out what’s trending, express yourself with comments or shares, cast a video to your TV, and more – all from inside the app.With the official YouTube app you can enjoy your favorite videos, creators, and music for free.FIND VIDEOS YOU LOVE FAST- Browse personal recommendations on the home tab- See the latest from the creators you follow on the subscriptions tab- Discover the world’s hottest videos on the trending tab- Look up videos you’ve watched and your like history on the account tabCONNECT AND SHARE- Let people know how you feel with likes, comments, or shares- Edit, add filters, add music, and upload your own videos all inside the app",
+        "badge": "This app is designed for both iPhone and iPad",
+        "rating-total": "233945",
+        "rating-per-star": "723,233222",
+        "rating-desc": "3 and a half stars, 723 Ratings",
+        "rating-value": "3.39557",
+        "software-price": "Free",
+        "meta-desc": "Infrequent/Mild Horror/Fear ThemesInfrequent/Mild Profanity or Crude HumorInfrequent/Mild Medical/Treatment InformationInfrequent/Mild Sexual Content and NudityInfrequent/Mild Cartoon or Fantasy ViolenceFrequent/Intense Mature/Suggestive ThemesInfrequent/Mild Realistic ViolenceInfrequent/Mild Alcohol, Tobacco, or Drug Use or ReferencesInfrequent/Mild Simulated Gambling",
+        "file-size": "54.2",
+        "content-rating": "You must be at least 17 years old to download this app.Infrequent/Mild Horror/Fear ThemesInfrequent/Mild Profanity or Crude HumorInfrequent/Mild Medical/Treatment InformationInfrequent/Mild Sexual Content and NudityInfrequent/Mild Cartoon or Fantasy ViolenceFrequent/Intense Mature/Suggestive ThemesInfrequent/Mild Realistic ViolenceInfrequent/Mild Alcohol, Tobacco, or Drug Use or ReferencesInfrequent/Mild Simulated Gambling",
+        "date-published": "2016-08-23 00:00:00",
+        "software-version": "11.32",
+        "software-os": "Requires iOS 8.0 or later. Compatible with iPhone, iPad, and iPod touch.",
+        "total-downloads": "23394500",
+        "app-url": "https://itunes.apple.com/us/app/youtube/id544007664?mt=8",
+        "app-id": "544007664"
+}
+{
+        "platform": "IOS",
+        "title": "Hangouts on the App StoreHangouts\n              By Google, Inc.\n              \n            \n            \n              \n              View More by This Developer\n              \n            \n            Open iTunes to buy and download apps.",
+        "developer": "Google, Inc.",
+        "developer-site": "https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewEula?id=643496868",
+        "genre": "SOCIAL-NETWORKING",
+        "description": "Use Hangouts to keep in touch. Message friends, start free video or voice calls, and hop on a conversation with one person or a group. Say more with photos, stickers, and emoji.• Include all your friends with group chats for up to 150 people.• Say more with status messages, photos, maps, emoji, stickers, and animated GIFs.• Turn any conversation into a free group video call with up to 10 friends.• Call any phone number in the world (and all calls to other Hangouts users are free!).• Connect your Google Voice account for phone number, SMS, and voicemail integration.• Keep in touch with friends across all your devices.• Message friends anytime, even if they're offline.• Manage mobile app remotely with Google for Work.Note: Mobile carrier and ISP charges may apply. Calls to Hangouts users are free, but other calls might be charged.",
+        "badge": "This app is designed for both iPhone and iPad",
+        "rating-total": "32476",
+        "rating-per-star": "565,31911",
+        "rating-desc": "4 and a half stars, 565 Ratings",
+        "rating-value": "4.37876",
+        "software-price": "Free",
+        "meta-desc": "",
+        "file-size": "59.5",
+        "content-rating": "Rated 4+",
+        "date-published": "2016-08-03 00:00:00",
+        "software-version": "11.5.0",
+        "software-os": "Requires iOS 8.0 or later. Compatible with iPhone, iPad, and iPod touch.",
+        "total-downloads": "3247600",
+        "app-url": "https://itunes.apple.com/us/app/hangouts/id643496868?mt=8",
+        "app-id": "643496868"
+}
+{
+        "platform": "IOS",
+        "title": "Chrome - web browser by Google on the App StoreChrome - web browser by Google\n              By Google, Inc.\n              \n            \n            \n              \n              View More by This Developer\n              \n            \n            Open iTunes to buy and download apps.",
+        "developer": "Google, Inc.",
+        "developer-site": "https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewEula?id=535886823",
+        "genre": "Utilities",
+        "description": "Browse fast on your iPhone and iPad with the Google Chrome browser you love on desktop. Pick up where you left off on your other devices, search by voice, and easily read webpages in any language.• SYNC ACROSS DEVICES - seamlessly access and open tabs and bookmarks from your laptop, phone or tablet• FASTER BROWSING - choose from search results that instantly appear as you type and quickly access previously visited pages• VOICE SEARCH - use the magic of Google voice search to find answers on-the-go without typing• TRANSLATE - easily read webpages in any language• UNLIMITED TABS - open as many tabs as your heart desires and quickly flip through them like a deck of cards• PRIVACY - use Incognito mode to browse without saving your history (learn more at http://goo.gl/WUx02)",
+        "badge": "This app is designed for both iPhone and iPad",
+        "rating-total": "53485",
+        "rating-per-star": "325,53160",
+        "rating-desc": "3 and a half stars, 325 Ratings",
+        "rating-value": "3.68615",
+        "software-price": "Free",
+        "meta-desc": "Unrestricted Web Access",
+        "file-size": "65.6",
+        "content-rating": "You must be at least 17 years old to download this app.Unrestricted Web Access",
+        "date-published": "2016-07-27 00:00:00",
+        "software-version": "52.0.2743.84",
+        "software-os": "Requires iOS 9.0 or later. Compatible with iPhone, iPad, and iPod touch.",
+        "total-downloads": "5348500",
+        "app-url": "https://itunes.apple.com/us/app/chrome-web-browser-by-google/id535886823?mt=8",
+        "app-id": "535886823"
+}
+
+
 ```
 
 

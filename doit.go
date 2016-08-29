@@ -87,7 +87,7 @@ func processIt(doneFlg chan bool, wg *sync.WaitGroup, idx int, store *StoreApp) 
 	}
 	jdata, _ := json.MarshalIndent(appsdata, "", "\t")
 	//dont leave your friend behind :-)
-	log.Println("JSON: ", string(jdata))
+	log.Println(string(jdata))
 	//send signal -> DONE
 	doneFlg <- true
 }
