@@ -4,7 +4,13 @@
 - [x] This is a simple golang script that will parse/scrape the store/play  meta-infos:
 
 ####        a. Android Play Store meta info
+
+######      https://play.google.com/store/apps/details?id=com.google.android.apps.photos&hl=en
+
+
 ####        b. Apple App Store meta info 
+
+######      https://itunes.apple.com/app/id293622097?mt=8
 
 - [x] Output the meta-info in JSON format
 
