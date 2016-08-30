@@ -28,7 +28,7 @@ type AppsMetaInfos interface {
 
 type AppsMeta struct{}
 
-func doIt(meta AppsMetaInfos) {
+func handler(meta AppsMetaInfos) {
 	//set
 
 	//get task

@@ -35,6 +35,6 @@ func main() {
 	}
 
 	//show 1x1 per storeid
-	doIt(pAppsMeta)
+	handler(pAppsMeta)
 	os.Exit(0)
 }
