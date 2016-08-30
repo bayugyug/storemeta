@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
+	"html"
 	"io/ioutil"
 	"log"
 	"net"
@@ -192,11 +193,12 @@ func fmtAndroid(doc *goquery.Document, store *StoreApp) (appsdata *App) {
 	doc.Find("div.meta-info").Each(func(i int, n *goquery.Selection) {
 		appsdata.MetaDesc += "\r\n" + n.Text()
 	})
+	appsdata.MetaDesc = strings.TrimSpace(appsdata.MetaDesc)
 	//DEVELOPER INFO
 	doc.Find("a.dev-link").Each(func(i int, n *goquery.Selection) {
 		for _, v := range n.Nodes[0].Attr {
 			if v.Key == "href" && strings.Contains(v.Val, "http") {
-				appsdata.DeveloperSite = strings.TrimSpace(v.Val)
+				appsdata.DeveloperSite = strings.TrimSpace(html.UnescapeString(v.Val))
 			}
 		}
 	})
@@ -245,6 +247,7 @@ func fmtAndroid(doc *goquery.Document, store *StoreApp) (appsdata *App) {
 		for _, v := range n.Nodes[0].Attr {
 			if v.Key == "property" && v.Val == "og:url" {
 				appsdata.AppURL, _ = n.Attr("content")
+				appsdata.AppURL = html.UnescapeString(appsdata.AppURL)
 				return
 			}
 		}
@@ -324,8 +327,10 @@ func fmtIOS(doc *goquery.Document, store *StoreApp) (appsdata *App) {
 	doc.Find("div.app-links").Find("a").Each(func(i int, n *goquery.Selection) {
 		for _, v := range n.Nodes[0].Attr {
 			if v.Key == "href" {
-				appsdata.DeveloperSite = v.Val
-				return
+				if len(appsdata.DeveloperSite) == 0 {
+					appsdata.DeveloperSite = strings.TrimSpace(html.UnescapeString(v.Val))
+				}
+				break
 			}
 		}
 	})
@@ -415,6 +420,7 @@ func fmtIOS(doc *goquery.Document, store *StoreApp) (appsdata *App) {
 		for _, v := range n.Nodes[0].Attr {
 			if v.Key == "rel" && v.Val == "canonical" {
 				appsdata.AppURL, _ = n.Attr("href")
+				appsdata.AppURL = html.UnescapeString(appsdata.AppURL)
 				return
 			}
 		}
