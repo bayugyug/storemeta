@@ -283,7 +283,7 @@ func showUsage() {
 
 	Example:
 
-		./storemeta -a <AndroidStoreID>  -i <IOSStoreID>
+
 
 		./storemeta -list-category-android
 
