@@ -15,18 +15,6 @@
 - [x] Output the meta-info in JSON format
 
 
-## Note:
-
-- [x] IOS Total Downloads is calculated :
-
-        Rating-Total x 10
-
-- [x] Android Total Downloads is calculated :
-        Average of Numdownloads which is 
-    
-        ( NumDownloads From + NumDownloads To )  / 2
-
-
 
 ## Compile
 
@@ -527,7 +515,19 @@ $ ./storemeta -category-android=FAMILY_AGE_AGE_RANGE1
 ]
 
 
+
 ```
+
+## Note:
+
+- [x] IOS Total Downloads is calculated :
+
+        Rating-Total x 10
+
+- [x] Android Total Downloads is calculated :
+        Average of Numdownloads which is 
+    
+        ( NumDownloads From + NumDownloads To )  / 2
 
 
 ## Docker Binary
