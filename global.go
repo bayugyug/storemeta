@@ -75,8 +75,8 @@ var (
 	pAndroidStoreId = ""
 	pIOSStoreId     = ""
 
-	pIOSList     = 0
-	pAndroidList = 0
+	pIOSList     = false
+	pAndroidList = false
 
 	pIOSCategory     = ""
 	pAndroidCategory = ""
@@ -162,11 +162,11 @@ func initEnvParams() {
 	flag.StringVar(&pIOSStoreId, "ios", pIOSStoreId, usageIOSStore)
 	flag.StringVar(&pIOSStoreId, "i", pIOSStoreId, usageIOSStore+" (shorthand)")
 
-	flag.IntVar(&pIOSList, "list-category-ios", pIOSList, usageIOSList)
-	flag.IntVar(&pIOSList, "li", pIOSList, usageIOSList+" (shorthand)")
+	flag.BoolVar(&pIOSList, "list-category-ios", pIOSList, usageIOSList)
+	flag.BoolVar(&pIOSList, "li", pIOSList, usageIOSList+" (shorthand)")
 
-	flag.IntVar(&pAndroidList, "list-category-android", pAndroidList, usageAndroidList)
-	flag.IntVar(&pAndroidList, "la", pAndroidList, usageAndroidList+" (shorthand)")
+	flag.BoolVar(&pAndroidList, "list-category-android", pAndroidList, usageAndroidList)
+	flag.BoolVar(&pAndroidList, "la", pAndroidList, usageAndroidList+" (shorthand)")
 
 	flag.StringVar(&pIOSCategory, "category-ios", pIOSCategory, usageIOSCategory)
 	flag.StringVar(&pIOSCategory, "ci", pIOSCategory, usageIOSCategory+" (shorthand)")
@@ -185,7 +185,7 @@ func initEnvParams() {
 		showUsage()
 	}
 	if pIOSStoreId == "" && pAndroidStoreId == "" &&
-		pIOSList == 0 && pAndroidList == 0 &&
+		!pIOSList && !pAndroidList &&
 		pIOSCategory == "" && pAndroidCategory == "" {
 		showUsage()
 	}
@@ -285,9 +285,9 @@ func showUsage() {
 
 		./storemeta -a <AndroidStoreID>  -i <IOSStoreID>
 
-		./storemeta -list-category-android=1
+		./storemeta -list-category-android
 
-		./storemeta -list-category-ios=1
+		./storemeta -list-category-ios
 
 		./storemeta -category-android=GAME_ACTION
 

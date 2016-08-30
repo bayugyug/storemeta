@@ -50,13 +50,13 @@ Ver: 0.1.0-20160830.022006
         use for querying the IOS App Store (shorthand)
   -ios string
         use for querying the IOS App Store
-  -la int
+  -la
         use for querying the category list of apps in Android App Store (shorthand)
-  -li int
+  -li
         use for querying the category list of apps in IOS App Store (shorthand)
-  -list-category-android int
+  -list-category-android
         use for querying the category list of apps in Android App Store
-  -list-category-ios int
+  -list-category-ios
         use for querying the category list of apps in IOS App Store
   -pf string
         use to enable what format is used in showing the output (shorthand) (default "json")
@@ -68,9 +68,9 @@ Ver: 0.1.0-20160830.022006
 
                 ./storemeta -a <AndroidStoreID>  -i <IOSStoreID>
 
-                ./storemeta -list-category-android=1
+                ./storemeta -list-category-android
 
-                ./storemeta -list-category-ios=1
+                ./storemeta -list-category-ios
 
                 ./storemeta -category-android=GAME_ACTION
 
@@ -329,7 +329,7 @@ $  ./storemeta  -i="544007664,535886823,643496868"
 ```go
 
 
-$   ./storemeta -print-format=simple -list-category-ios=1
+$   ./storemeta -print-format=simple -list-category-ios
         1 BOOKS
         2 BUSINESS
         3 EDUCATION
@@ -379,7 +379,7 @@ $   ./storemeta -print-format=simple -list-category-ios=1
 
 ```go
 
-$       ./storemeta  -print-format=simple -list-category-android=1
+$       ./storemeta  -print-format=simple -list-category-android
 
         1 ANDROID_WEAR
         2 BOOKS_AND_REFERENCE

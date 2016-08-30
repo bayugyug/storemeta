@@ -8,13 +8,13 @@ import (
 func main() {
 
 	//show cat-list
-	if pIOSList == 1 {
+	if pIOSList {
 		showAppCategories(IOS)
 		return
 	}
 
 	//show cat-list
-	if pAndroidList == 1 {
+	if pAndroidList {
 		showAppCategories(ANDROID)
 		return
 	}
