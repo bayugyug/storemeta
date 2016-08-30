@@ -511,3 +511,23 @@ $ ./storemeta -category-android=FAMILY_AGE_AGE_RANGE1
 
 ```
 
+
+## Docker Compile
+
+- [x] In order to  use it as dockerize binary
+
+
+```sh
+
+    make clean && make docker-devel
+
+    sudo  sysctl -w net.ipv4.ip_forward=1
+
+    sudo  docker run --rm  gomongers/storemeta -h
+
+    sudo  docker run --rm  gomongers/storemeta -i="293622097"
+
+```
+
+
+

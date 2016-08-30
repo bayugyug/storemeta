@@ -11,8 +11,14 @@ test : build
 	gocov test | gocov-xml > coverage.xml
 	go test -bench=. -test.benchmem -v | gobench2plot > benchmarks.xml
 
+prepare : build
+	cp storemeta Docker/storemeta
+
+docker-devel : prepare
+	cd Docker && sudo docker build --no-cache --rm -t gomongers/storemeta .
+
 clean:
-	rm -f storemeta
+	rm -f storemeta Docker/storemeta
 	rm -f benchmarks.xml coverage.xml vet.txt lint.txt
 
 re: clean all
