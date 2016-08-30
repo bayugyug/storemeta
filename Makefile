@@ -15,7 +15,7 @@ prepare : build
 	cp storemeta Docker/storemeta
 
 docker-devel : prepare
-	cd Docker && sudo docker build --no-cache --rm -t gomongers/storemeta .
+	cd Docker && sudo docker build --no-cache --rm -t bayugyug/storemeta .
 
 clean:
 	rm -f storemeta Docker/storemeta

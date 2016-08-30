@@ -523,9 +523,9 @@ $ ./storemeta -category-android=FAMILY_AGE_AGE_RANGE1
 
     sudo  sysctl -w net.ipv4.ip_forward=1
 
-    sudo  docker run --rm  gomongers/storemeta -h
+    sudo  docker run --rm  bayugyug/storemeta -h
 
-    sudo  docker run --rm  gomongers/storemeta -i="293622097"
+    sudo  docker run --rm  bayugyug/storemeta -i="293622097"
 
 ```
 
