@@ -1,7 +1,7 @@
 ## storemeta
 
 
-- [x] This is a simple golang script that will parse/scrape the store/play  meta-infos:
+- [x] This is a simple golang script that will parse/scrape the apps-store/play-store  meta-infos:
 
 ####        a. Android Play Store meta info
 
@@ -13,6 +13,18 @@
 ######      https://itunes.apple.com/app/id293622097?mt=8
 
 - [x] Output the meta-info in JSON format
+
+
+## Note:
+
+- [x] IOS Total Downloads is calculated :
+
+        Rating-Total x 10
+
+- [x] Android Total Downloads is calculated :
+        Average of Numdownloads which is 
+    
+        ( NumDownloads From + NumDownloads To )  / 2
 
 
 
@@ -532,18 +544,4 @@ $ ./storemeta -category-android=FAMILY_AGE_AGE_RANGE1
     sudo  docker run --rm  bayugyug/storemeta -i="293622097"
 
 ```
-
-
-
-## Note:
-
-- [x] IOS Total Downloads is calculated :
-
-        Rating-Total x 10
-
-- [x] Android Total Downloads is calculated :
-        Average of Numdownloads which is 
-    
-        ( NumDownloads From + NumDownloads To )  / 2
-
 
