@@ -26,13 +26,51 @@
 
 ```sh
 
-$       ./storemeta
+$ ./storemeta -h
+
+Ver: 0.1.0-20160830.022006
+
+  -a string
+        use for querying the Android App Store (shorthand)
+  -android string
+        use for querying the Android App Store
+  -ca string
+        use for querying the list of apps per category in IOS App Store (shorthand)
+  -category-android string
+        use for querying the list of apps per category in IOS App Store
+  -category-ios string
+        use for querying the list of apps per category in IOS App Store
+  -ci string
+        use for querying the list of apps per category in IOS App Store (shorthand)
+  -d    use to enable the output in console (shorthand) (default true)
+  -debug
+        use to enable the output in console (default true)
+  -h    Show this help/how-to
+  -i string
+        use for querying the IOS App Store (shorthand)
+  -ios string
+        use for querying the IOS App Store
+  -la int
+        use for querying the category list of apps in Android App Store (shorthand)
+  -li int
+        use for querying the category list of apps in IOS App Store (shorthand)
+  -list-category-android int
+        use for querying the category list of apps in Android App Store
+  -list-category-ios int
+        use for querying the category list of apps in IOS App Store
+  -pf string
+        use to enable what format is used in showing the output (shorthand) (default "json")
+  -print-format string
+        use to enable what format is used in showing the output (default "json")
+
 
         Example:
 
-                ./storemeta -print-format=simple|json -list-category-android=1
+                ./storemeta -a <AndroidStoreID>  -i <IOSStoreID>
 
-                ./storemeta -print-format=simple|json -list-category-ios=1
+                ./storemeta -list-category-android=1
+
+                ./storemeta -list-category-ios=1
 
                 ./storemeta -category-android=GAME_ACTION
 
@@ -55,6 +93,7 @@ $       ./storemeta
                 or
 
                 ./storemeta  -i="544007664,535886823,643496868"
+
 ```
 
 

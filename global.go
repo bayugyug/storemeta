@@ -182,16 +182,12 @@ func initEnvParams() {
 
 	//either 1 should be present
 	if pHelp {
-		log.Println("Ver:", pVersion, "\n")
-		flag.PrintDefaults()
 		showUsage()
-		os.Exit(0)
 	}
 	if pIOSStoreId == "" && pAndroidStoreId == "" &&
 		pIOSList == 0 && pAndroidList == 0 &&
 		pIOSCategory == "" && pAndroidCategory == "" {
 		showUsage()
-		os.Exit(0)
 	}
 	if pAndroidStoreId != "" {
 		sts := strings.Split(pAndroidStoreId, ",")
@@ -316,5 +312,8 @@ func showUsage() {
 		./storemeta  -i="544007664,535886823,643496868"
 
 `
-	fmt.Println(msg)
+	log.Println("Ver:", pVersion, "\n")
+	flag.PrintDefaults()
+	log.Println(msg)
+	os.Exit(0)
 }

@@ -476,6 +476,8 @@ func showResults(doneFlg chan bool, wg *sync.WaitGroup) {
 		}
 		applist = append(applist, row)
 	}
+
+	//json fmt
 	jdata, _ := json.MarshalIndent(applist, "", "\t")
 	//dont leave your friend behind :-)
 	log.Println(string(jdata))
