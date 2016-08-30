@@ -30,9 +30,9 @@ $       ./storemeta
 
         Example:
 
-                ./storemeta -list-category-android=1
+                ./storemeta -print-format=simple|json -list-category-android=1
 
-                ./storemeta -list-category-ios=1
+                ./storemeta -print-format=simple|json -list-category-ios=1
 
                 ./storemeta -category-android=GAME_ACTION
 
@@ -290,10 +290,7 @@ $  ./storemeta  -i="544007664,535886823,643496868"
 ```go
 
 
-$   ./storemeta -list-category-ios=1
-
-        IOS LIST OF CATEGORIES:
-
+$   ./storemeta -print-format=simple -list-category-ios=1
         1 BOOKS
         2 BUSINESS
         3 EDUCATION
@@ -343,10 +340,7 @@ $   ./storemeta -list-category-ios=1
 
 ```go
 
-$       ./storemeta -list-category-android=1
-
-        ANDROID LIST OF CATEGORIES:
-
+$       ./storemeta  -print-format=simple -list-category-android=1
 
         1 ANDROID_WEAR
         2 BOOKS_AND_REFERENCE

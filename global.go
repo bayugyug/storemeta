@@ -22,6 +22,7 @@ const (
 	usageIOSList         = "use for querying the category list of apps in IOS App Store"
 	usageAndroidCategory = "use for querying the list of apps per category in Android App Store"
 	usageIOSCategory     = "use for querying the list of apps per category in IOS App Store"
+	usagePrintFormat     = "use to enable what format is used in showing the output"
 	IOS                  = "IOS"
 	ANDROID              = "ANDROID"
 )
@@ -67,7 +68,7 @@ var (
 	//signal flag
 	pStillRunning = true
 
-	pBuildTime = ""
+	pBuildTime = "0"
 	pVersion   = "0.1.0" + "-" + pBuildTime
 	//console
 	pShowConsole    = true
@@ -84,6 +85,10 @@ var (
 	pEnvVars = map[string]*string{
 		"GMONGERS_LDIR": &pLogDir,
 	}
+
+	//print_format
+	pPrintFormat = "json"
+	pHelp        = false
 )
 
 var pAppsData = make(chan *App)
@@ -150,19 +155,38 @@ func initEnvParams() {
 	}
 	flag.BoolVar(&pShowConsole, "debug", pShowConsole, usageShowConsole)
 	flag.BoolVar(&pShowConsole, "d", pShowConsole, usageShowConsole+" (shorthand)")
+
 	flag.StringVar(&pAndroidStoreId, "android", pAndroidStoreId, usageAndroidStore)
 	flag.StringVar(&pAndroidStoreId, "a", pAndroidStoreId, usageAndroidStore+" (shorthand)")
+
 	flag.StringVar(&pIOSStoreId, "ios", pIOSStoreId, usageIOSStore)
 	flag.StringVar(&pIOSStoreId, "i", pIOSStoreId, usageIOSStore+" (shorthand)")
 
 	flag.IntVar(&pIOSList, "list-category-ios", pIOSList, usageIOSList)
+	flag.IntVar(&pIOSList, "li", pIOSList, usageIOSList+" (shorthand)")
+
 	flag.IntVar(&pAndroidList, "list-category-android", pAndroidList, usageAndroidList)
+	flag.IntVar(&pAndroidList, "la", pAndroidList, usageAndroidList+" (shorthand)")
 
 	flag.StringVar(&pIOSCategory, "category-ios", pIOSCategory, usageIOSCategory)
+	flag.StringVar(&pIOSCategory, "ci", pIOSCategory, usageIOSCategory+" (shorthand)")
+
 	flag.StringVar(&pAndroidCategory, "category-android", pAndroidCategory, usageIOSCategory)
+	flag.StringVar(&pAndroidCategory, "ca", pAndroidCategory, usageIOSCategory+" (shorthand)")
+
+	flag.StringVar(&pPrintFormat, "print-format", pPrintFormat, usagePrintFormat)
+	flag.StringVar(&pPrintFormat, "pf", pPrintFormat, usagePrintFormat+" (shorthand)")
+
+	flag.BoolVar(&pHelp, "h", pHelp, "Show this help/how-to")
 	flag.Parse()
 
 	//either 1 should be present
+	if pHelp {
+		log.Println("Ver:", pVersion, "\n")
+		flag.PrintDefaults()
+		showUsage()
+		os.Exit(0)
+	}
 	if pIOSStoreId == "" && pAndroidStoreId == "" &&
 		pIOSList == 0 && pAndroidList == 0 &&
 		pIOSCategory == "" && pAndroidCategory == "" {

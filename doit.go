@@ -33,8 +33,6 @@ func doIt() {
 
 	//get task
 	for idx, url := range pStores {
-		//var w io.Writer
-		//var pg = 0
 		if !pStillRunning {
 			log.Println("Signal detected ...")
 			break
