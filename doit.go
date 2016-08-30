@@ -19,7 +19,16 @@ import (
 
 func b(s string) *bufio.Reader { return bufio.NewReader(strings.NewReader(s)) }
 
-func doIt() {
+type AppsMetaInfos interface {
+	Process(chan bool, *sync.WaitGroup, int, *StoreApp)
+	Show(chan bool, *sync.WaitGroup)
+	FormatAndroid(*goquery.Document, *StoreApp) *App
+	FormatIOS(*goquery.Document, *StoreApp) *App
+}
+
+type AppsMeta struct{}
+
+func doIt(meta AppsMetaInfos) {
 	//set
 
 	//get task
@@ -30,7 +39,7 @@ func doIt() {
 	uFlag := make(chan bool)
 	uwg := new(sync.WaitGroup)
 	uwg.Add(1)
-	go showResults(uFlag, uwg)
+	go meta.Show(uFlag, uwg)
 
 	//get task
 	for idx, url := range pStores {
@@ -39,7 +48,7 @@ func doIt() {
 			break
 		}
 		zwg.Add(1)
-		go processIt(zFlag, zwg, idx+1, url)
+		go meta.Process(zFlag, zwg, idx+1, url)
 	}
 
 	zwg.Wait()
@@ -52,7 +61,7 @@ func doIt() {
 
 }
 
-func processIt(doneFlg chan bool, wg *sync.WaitGroup, idx int, store *StoreApp) {
+func (meta AppsMeta) Process(doneFlg chan bool, wg *sync.WaitGroup, idx int, store *StoreApp) {
 
 	go func() {
 		for {
@@ -87,9 +96,9 @@ func processIt(doneFlg chan bool, wg *sync.WaitGroup, idx int, store *StoreApp) 
 	var appsdata *App
 	switch store.OS {
 	case IOS:
-		appsdata = fmtIOS(doc, store)
+		appsdata = meta.FormatIOS(doc, store)
 	case ANDROID:
-		appsdata = fmtAndroid(doc, store)
+		appsdata = meta.FormatAndroid(doc, store)
 	}
 	pAppsData <- appsdata
 
@@ -97,7 +106,7 @@ func processIt(doneFlg chan bool, wg *sync.WaitGroup, idx int, store *StoreApp) 
 	doneFlg <- true
 }
 
-func fmtAndroid(doc *goquery.Document, store *StoreApp) (appsdata *App) {
+func (meta AppsMeta) FormatAndroid(doc *goquery.Document, store *StoreApp) (appsdata *App) {
 
 	//init
 	appsdata = &App{AppID: store.StoreID, AppURL: store.URL, Platform: store.OS}
@@ -119,7 +128,7 @@ func fmtAndroid(doc *goquery.Document, store *StoreApp) (appsdata *App) {
 			}
 			//GENRE
 			if v.Key == "itemprop" && v.Val == "genre" {
-				appsdata.Genre = strings.TrimSpace(n.Text())
+				appsdata.Genre = html.UnescapeString(strings.ToUpper(strings.TrimSpace(n.Text())))
 			}
 		}
 	})
@@ -130,7 +139,7 @@ func fmtAndroid(doc *goquery.Document, store *StoreApp) (appsdata *App) {
 			if v.Key == "href" && strings.ContainsAny(v.Val, "/store/apps/category") {
 				genres := strings.Split(strings.TrimSpace(v.Val), "/")
 				if len(genres) >= 5 {
-					appsdata.Genre = strings.ToUpper(genres[4])
+					appsdata.Genre = html.UnescapeString(strings.ToUpper(genres[4]))
 				}
 				return
 			}
@@ -257,7 +266,7 @@ func fmtAndroid(doc *goquery.Document, store *StoreApp) (appsdata *App) {
 	return appsdata
 }
 
-func fmtIOS(doc *goquery.Document, store *StoreApp) (appsdata *App) {
+func (meta AppsMeta) FormatIOS(doc *goquery.Document, store *StoreApp) (appsdata *App) {
 
 	//init
 	appsdata = &App{AppID: store.StoreID, AppURL: store.URL, Platform: store.OS}
@@ -350,7 +359,7 @@ func fmtIOS(doc *goquery.Document, store *StoreApp) (appsdata *App) {
 			}
 			//GENRE
 			if v.Key == "itemprop" && v.Val == "applicationCategory" {
-				appsdata.Genre = strings.TrimSpace(n.Text())
+				appsdata.Genre = html.UnescapeString(strings.ToUpper(strings.TrimSpace(n.Text())))
 			}
 			//SOFTWARE-VERSION
 			if v.Key == "itemprop" && v.Val == "softwareVersion" {
@@ -373,7 +382,7 @@ func fmtIOS(doc *goquery.Document, store *StoreApp) (appsdata *App) {
 			if v.Key == "href" && strings.ContainsAny(v.Val, "https://itunes.apple.com/") && strings.ContainsAny(v.Val, "/genre/") {
 				genres := strings.Split(strings.TrimSpace(v.Val), "/")
 				if len(genres) >= 6 {
-					appsdata.Genre = strings.Replace(strings.ToUpper(genres[5]), "IOS-", "", -1)
+					appsdata.Genre = html.UnescapeString(strings.Replace(strings.ToUpper(genres[5]), "IOS-", "", -1))
 				}
 			}
 		}
@@ -400,16 +409,16 @@ func fmtIOS(doc *goquery.Document, store *StoreApp) (appsdata *App) {
 		}
 	})
 	//SUB-DESC
-	meta := []string{}
+	smeta := []string{}
 	doc.Find("ul.list").Each(func(i int, n *goquery.Selection) {
 		for _, v := range n.Nodes[0].Attr {
 			if v.Key == "class" && strings.Contains(v.Val, "app-rating-reasons") {
-				meta = append(meta, strings.TrimSpace(n.Text()))
+				smeta = append(smeta, strings.TrimSpace(n.Text()))
 			}
 		}
 
 	})
-	appsdata.MetaDesc = strings.TrimSpace(strings.Join(meta[:], "\n"))
+	appsdata.MetaDesc = strings.TrimSpace(strings.Join(smeta[:], "\n"))
 	//APP-RATING
 	doc.Find("div.app-rating").Each(func(i int, n *goquery.Selection) {
 		appsdata.ContentRating = strings.TrimSpace(n.Text())
@@ -430,32 +439,7 @@ func fmtIOS(doc *goquery.Document, store *StoreApp) (appsdata *App) {
 	return appsdata
 }
 
-func getResult(url string) (int, string) {
-	//client
-	c := &http.Client{
-		Transport: &http.Transport{
-			Dial: (&net.Dialer{
-				Timeout: 300 * time.Second,
-			}).Dial,
-		},
-	}
-	res, err := c.Get(url)
-	if err != nil {
-		log.Println("ERROR: getResult:", err)
-		return 0, ""
-	}
-	//get response
-	robots, err := ioutil.ReadAll(res.Body)
-	defer res.Body.Close()
-	if err != nil {
-		log.Println("ERROR: getResult:", err)
-		return 0, ""
-	}
-	//give
-	return res.StatusCode, string(robots)
-}
-
-func showResults(doneFlg chan bool, wg *sync.WaitGroup) {
+func (meta AppsMeta) Show(doneFlg chan bool, wg *sync.WaitGroup) {
 
 	go func() {
 		for {
@@ -489,4 +473,29 @@ func showResults(doneFlg chan bool, wg *sync.WaitGroup) {
 	log.Println(string(jdata))
 	//send signal -> DONE
 	doneFlg <- true
+}
+
+func getResult(url string) (int, string) {
+	//client
+	c := &http.Client{
+		Transport: &http.Transport{
+			Dial: (&net.Dialer{
+				Timeout: 300 * time.Second,
+			}).Dial,
+		},
+	}
+	res, err := c.Get(url)
+	if err != nil {
+		log.Println("ERROR: getResult:", err)
+		return 0, ""
+	}
+	//get response
+	robots, err := ioutil.ReadAll(res.Body)
+	defer res.Body.Close()
+	if err != nil {
+		log.Println("ERROR: getResult:", err)
+		return 0, ""
+	}
+	//give
+	return res.StatusCode, string(robots)
 }
