@@ -531,3 +531,15 @@ $ ./storemeta -category-android=FAMILY_AGE_AGE_RANGE1
 
 
 
+## Note:
+
+- [x] IOS Total total-downloads is calculated :
+
+        Rating-Total x 10
+
+- [x] Android Total total-downloads is calculated :
+        Average of Numdownloads which is 
+    
+        ( NumDownloads From + NumDownloads To )  / 2
+
+

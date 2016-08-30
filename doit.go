@@ -302,7 +302,7 @@ func fmtIOS(doc *goquery.Document, store *StoreApp) (appsdata *App) {
 	//TOTAL DL
 	appsdata.RatingPerStar = strings.Join(pstars[:], ",")
 	appsdata.RatingTotal = fmt.Sprintf("%d", totr8)
-	appsdata.TotalDownloads = fmt.Sprintf("%d", (100 * totr8))
+	appsdata.TotalDownloads = fmt.Sprintf("%d", (10 * totr8))
 	//RATING-STAR
 	stars := []string{}
 	doc.Find("div.rating").Each(func(i int, n *goquery.Selection) {
