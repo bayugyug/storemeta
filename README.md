@@ -512,14 +512,12 @@ $ ./storemeta -category-android=FAMILY_AGE_AGE_RANGE1
 ```
 
 
-## Docker Compile
+## Docker Binary
 
 - [x] In order to  use it as dockerize binary
 
 
 ```sh
-
-    make clean && make docker-devel
 
     sudo  sysctl -w net.ipv4.ip_forward=1
 
