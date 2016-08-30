@@ -27,6 +27,39 @@
 ```
 
 
+## Meta-Infos
+
+```go
+
+        type App struct {
+                Platform        string `json:"platform"`
+                AppURL          string `json:"app-url"`
+                AppID           string `json:"app-id"`
+                Genre           string `json:"genre"`
+                Title           string `json:"title"`
+                Description     string `json:"description"`
+                Badge           string `json:"badge"`
+                RatingTotal     string `json:"rating-total"`
+                RatingPerStar   string `json:"rating-per-star"`
+                RatingDesc      string `json:"rating-desc"`
+                RatingValue     string `json:"rating-value"`
+                SoftwarePrice   string `json:"software-price"`
+                MetaDesc        string `json:"meta-desc"`
+                FileSize        string `json:"file-size"`
+                ContentRating   string `json:"content-rating"`
+                DatePublished   string `json:"date-published"`
+                SoftwareVersion string `json:"software-version"`
+                SoftwareOs      string `json:"software-os"`
+                TotalDownloads  string `json:"total-downloads"`
+                Developer       string `json:"developer"`
+                DeveloperSite   string `json:"developer-site"`
+        }
+
+```
+
+
+
+
 
 ## Usage
 
