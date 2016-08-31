@@ -134,18 +134,9 @@ func (appscat AppsCategory) List(os, category, url string) {
 }
 
 func showCategory(appscat AppsCategories, os, category string) {
-	switch os {
-	case IOS:
-		if len(category) > 0 {
-			appscat.ShowlistPerCategory(os, category)
-		} else {
-			appscat.Showlist(os)
-		}
-	case ANDROID:
-		if len(category) > 0 {
-			appscat.ShowlistPerCategory(os, category)
-		} else {
-			appscat.Showlist(os)
-		}
+	if len(category) > 0 {
+		appscat.ShowlistPerCategory(os, category)
+	} else {
+		appscat.Showlist(os)
 	}
 }

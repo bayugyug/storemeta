@@ -28,7 +28,7 @@ type AppsMetaInfos interface {
 
 type AppsMeta struct{}
 
-func handler(meta AppsMetaInfos) {
+func handler(this AppsMetaInfos) {
 	//set
 
 	//get task
@@ -39,7 +39,7 @@ func handler(meta AppsMetaInfos) {
 	uFlag := make(chan bool)
 	uwg := new(sync.WaitGroup)
 	uwg.Add(1)
-	go meta.Show(uFlag, uwg)
+	go this.Show(uFlag, uwg)
 
 	//get task
 	for idx, url := range pStores {
@@ -48,7 +48,7 @@ func handler(meta AppsMetaInfos) {
 			break
 		}
 		zwg.Add(1)
-		go meta.Process(zFlag, zwg, idx+1, url)
+		go this.Process(zFlag, zwg, idx+1, url)
 	}
 
 	zwg.Wait()
@@ -61,7 +61,7 @@ func handler(meta AppsMetaInfos) {
 
 }
 
-func (meta AppsMeta) Process(doneFlg chan bool, wg *sync.WaitGroup, idx int, store *StoreApp) {
+func (this AppsMeta) Process(doneFlg chan bool, wg *sync.WaitGroup, idx int, store *StoreApp) {
 
 	go func() {
 		for {
@@ -96,9 +96,9 @@ func (meta AppsMeta) Process(doneFlg chan bool, wg *sync.WaitGroup, idx int, sto
 	var appsdata *App
 	switch store.OS {
 	case IOS:
-		appsdata = meta.FormatIOS(doc, store)
+		appsdata = this.FormatIOS(doc, store)
 	case ANDROID:
-		appsdata = meta.FormatAndroid(doc, store)
+		appsdata = this.FormatAndroid(doc, store)
 	}
 	pAppsData <- appsdata
 
@@ -106,7 +106,7 @@ func (meta AppsMeta) Process(doneFlg chan bool, wg *sync.WaitGroup, idx int, sto
 	doneFlg <- true
 }
 
-func (meta AppsMeta) FormatAndroid(doc *goquery.Document, store *StoreApp) (appsdata *App) {
+func (this AppsMeta) FormatAndroid(doc *goquery.Document, store *StoreApp) (appsdata *App) {
 
 	//init
 	appsdata = &App{AppID: store.StoreID, AppURL: store.URL, Platform: store.OS}
@@ -266,7 +266,7 @@ func (meta AppsMeta) FormatAndroid(doc *goquery.Document, store *StoreApp) (apps
 	return appsdata
 }
 
-func (meta AppsMeta) FormatIOS(doc *goquery.Document, store *StoreApp) (appsdata *App) {
+func (this AppsMeta) FormatIOS(doc *goquery.Document, store *StoreApp) (appsdata *App) {
 
 	//init
 	appsdata = &App{AppID: store.StoreID, AppURL: store.URL, Platform: store.OS}
@@ -439,7 +439,7 @@ func (meta AppsMeta) FormatIOS(doc *goquery.Document, store *StoreApp) (appsdata
 	return appsdata
 }
 
-func (meta AppsMeta) Show(doneFlg chan bool, wg *sync.WaitGroup) {
+func (this AppsMeta) Show(doneFlg chan bool, wg *sync.WaitGroup) {
 
 	go func() {
 		for {
