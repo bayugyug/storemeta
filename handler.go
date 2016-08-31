@@ -19,17 +19,22 @@ import (
 
 func b(s string) *bufio.Reader { return bufio.NewReader(strings.NewReader(s)) }
 
+//AppsMetaInfos skeleton interface
 type AppsMetaInfos interface {
 	Process(chan bool, *sync.WaitGroup, int, *StoreApp)
 	Show(chan bool, *sync.WaitGroup)
 	FormatAndroid(*goquery.Document, *StoreApp) *App
 	FormatIOS(*goquery.Document, *StoreApp) *App
+	ShowCategories(string)
+	ShowlistApps(string, string)
+	PrintList(string, string, string)
 }
 
+//AppsMeta empty holder
 type AppsMeta struct{}
 
-func handler(this AppsMetaInfos) {
-	//set
+//handler entry of the app
+func handler(metainfo AppsMetaInfos) {
 
 	//get task
 	zFlag := make(chan bool)
@@ -39,7 +44,7 @@ func handler(this AppsMetaInfos) {
 	uFlag := make(chan bool)
 	uwg := new(sync.WaitGroup)
 	uwg.Add(1)
-	go this.Show(uFlag, uwg)
+	go metainfo.Show(uFlag, uwg)
 
 	//get task
 	for idx, url := range pStores {
@@ -48,7 +53,7 @@ func handler(this AppsMetaInfos) {
 			break
 		}
 		zwg.Add(1)
-		go this.Process(zFlag, zwg, idx+1, url)
+		go metainfo.Process(zFlag, zwg, idx+1, url)
 	}
 
 	zwg.Wait()
@@ -61,7 +66,8 @@ func handler(this AppsMetaInfos) {
 
 }
 
-func (this AppsMeta) Process(doneFlg chan bool, wg *sync.WaitGroup, idx int, store *StoreApp) {
+//Process do the processing of the appstore URL
+func (metainfo AppsMeta) Process(doneFlg chan bool, wg *sync.WaitGroup, idx int, store *StoreApp) {
 
 	go func() {
 		for {
@@ -96,9 +102,9 @@ func (this AppsMeta) Process(doneFlg chan bool, wg *sync.WaitGroup, idx int, sto
 	var appsdata *App
 	switch store.OS {
 	case IOS:
-		appsdata = this.FormatIOS(doc, store)
+		appsdata = metainfo.FormatIOS(doc, store)
 	case ANDROID:
-		appsdata = this.FormatAndroid(doc, store)
+		appsdata = metainfo.FormatAndroid(doc, store)
 	}
 	pAppsData <- appsdata
 
@@ -106,7 +112,8 @@ func (this AppsMeta) Process(doneFlg chan bool, wg *sync.WaitGroup, idx int, sto
 	doneFlg <- true
 }
 
-func (this AppsMeta) FormatAndroid(doc *goquery.Document, store *StoreApp) (appsdata *App) {
+//FormatAndroid meta info formatting for Android Playstore
+func (metainfo AppsMeta) FormatAndroid(doc *goquery.Document, store *StoreApp) (appsdata *App) {
 
 	//init
 	appsdata = &App{AppID: store.StoreID, AppURL: store.URL, Platform: store.OS}
@@ -266,7 +273,8 @@ func (this AppsMeta) FormatAndroid(doc *goquery.Document, store *StoreApp) (apps
 	return appsdata
 }
 
-func (this AppsMeta) FormatIOS(doc *goquery.Document, store *StoreApp) (appsdata *App) {
+//FormatIOS format meta info for Itunes Store
+func (metainfo AppsMeta) FormatIOS(doc *goquery.Document, store *StoreApp) (appsdata *App) {
 
 	//init
 	appsdata = &App{AppID: store.StoreID, AppURL: store.URL, Platform: store.OS}
@@ -439,7 +447,8 @@ func (this AppsMeta) FormatIOS(doc *goquery.Document, store *StoreApp) (appsdata
 	return appsdata
 }
 
-func (this AppsMeta) Show(doneFlg chan bool, wg *sync.WaitGroup) {
+//Show print results of the meta info
+func (metainfo AppsMeta) Show(doneFlg chan bool, wg *sync.WaitGroup) {
 
 	go func() {
 		for {
@@ -475,6 +484,136 @@ func (this AppsMeta) Show(doneFlg chan bool, wg *sync.WaitGroup) {
 	doneFlg <- true
 }
 
+//ShowCategories show the list of categories for both stores
+func (metainfo AppsMeta) ShowCategories(os string) {
+	//init
+	categlist := []string{}
+	categ := ""
+	t := 0
+	re := regexp.MustCompile("[^0-9A-Za-z]+")
+	if _, ok := pCategories[os]; ok {
+		for _, v := range pCategories[os] {
+			if os == IOS {
+				cats := strings.Split(v, "/")
+				categ = strings.ToUpper(strings.Replace(cats[5], "ios-", "", -1))
+			} else if os == ANDROID {
+				cats := strings.Split(v, "/")
+				categ = strings.ToUpper(cats[6])
+			}
+			t++
+			categ = re.ReplaceAllString(categ, "_")
+			if strings.EqualFold(pPrintFormat, "json") {
+				categlist = append(categlist, categ)
+			} else {
+				log.Println(t, categ)
+			}
+		}
+	}
+	//json fmt
+	if len(categlist) > 0 {
+		jdata, _ := json.MarshalIndent(categlist, "", "\t")
+		//dont leave your friend behind :-)
+		log.Println(string(jdata))
+	}
+}
+
+//ShowlistApps show the list of apps per category for both stores
+func (metainfo AppsMeta) ShowlistApps(os, category string) {
+
+	categ := ""
+	t := 0
+	re := regexp.MustCompile("[^0-9A-Za-z]+")
+	if _, ok := pCategories[os]; ok {
+		for _, v := range pCategories[os] {
+			if os == IOS {
+				cats := strings.Split(v, "/")
+				categ = re.ReplaceAllString(strings.ToUpper(strings.Replace(cats[5], "ios-", "", -1)), "_")
+			} else if os == ANDROID {
+				cats := strings.Split(v, "/")
+				categ = re.ReplaceAllString(strings.ToUpper(cats[6]), "_")
+
+			}
+			if strings.EqualFold(category, categ) {
+				metainfo.PrintList(os, category, v)
+				t++
+				break
+			}
+
+		}
+	}
+	if t == 0 {
+		log.Println("\n\n", os, "Category not found!", category)
+	}
+}
+
+//PrintList show the list of the categories
+func (metainfo AppsMeta) PrintList(os, category, url string) {
+	status, body := getResult(url)
+	if status != 200 || body == "" {
+		log.Println("ERROR: invalid http status", status)
+		return
+	}
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(body))
+	if err != nil {
+		log.Println("ERROR: ", err)
+		return
+	}
+	appt := 0
+	var storelist []*StoreApp
+	switch os {
+	case IOS:
+		//app list
+		doc.Find("#selectedcontent").Find("a").Each(func(i int, n *goquery.Selection) {
+			for _, v := range n.Nodes[0].Attr {
+				//GENRE
+				if v.Key == "href" {
+					storeid := ""
+					xtores := strings.Split(v.Val, "/")
+					if len(xtores) > 6 {
+						ztores := strings.Split(xtores[6], "?")
+						if ztores[0] != "" {
+							storeid = strings.TrimSpace(ztores[0])
+						}
+						storelist = append(storelist, &StoreApp{Preview: strings.TrimSpace(v.Val), Category: category, StoreID: strings.Replace(storeid, "id", "", -1)})
+						appt++
+					}
+
+				}
+			}
+		})
+	case ANDROID:
+		//AUTHOR
+		doc.Find("a.card-click-target").Each(func(i int, n *goquery.Selection) {
+			for _, v := range n.Nodes[0].Attr {
+				//app
+				if v.Key == "href" && strings.ContainsAny(v.Val, "/store/apps/details?id=") {
+					storeid := ""
+					xtores := strings.Split(v.Val, "details?id=")
+					if len(xtores) >= 2 {
+						storeid = strings.TrimSpace(xtores[1])
+						storelist = append(storelist, &StoreApp{Preview: "https://play.google.com" + strings.TrimSpace(v.Val), Category: category, StoreID: strings.TrimSpace(storeid)})
+						appt++
+					}
+
+				}
+			}
+		})
+	}
+	jdata, _ := json.MarshalIndent(storelist, "", "\t")
+	//dont leave your friend behind :-)
+	log.Println(string(jdata))
+}
+
+//showCategory shows list of categories or list of apps per category
+func showCategory(metainfo AppsMeta, os, category string) {
+	if len(category) > 0 {
+		metainfo.ShowlistApps(os, category)
+	} else {
+		metainfo.ShowCategories(os)
+	}
+}
+
+//getResult http req a url
 func getResult(url string) (int, string) {
 	//client
 	c := &http.Client{

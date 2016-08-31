@@ -7,30 +7,29 @@ import (
 func main() {
 
 	//empty struct that implements
-	var pAppsCat AppsCategory
 	var pAppsMeta AppsMeta
 
 	//show cat-list
 	if pIOSList {
-		showCategory(pAppsCat, IOS, "")
+		showCategory(pAppsMeta, IOS, "")
 		return
 	}
 
 	//show cat-list
 	if pAndroidList {
-		showCategory(pAppsCat, ANDROID, "")
+		showCategory(pAppsMeta, ANDROID, "")
 		return
 	}
 
 	//show 1 categ
 	if len(pIOSCategory) > 0 {
-		showCategory(pAppsCat, IOS, pIOSCategory)
+		showCategory(pAppsMeta, IOS, pIOSCategory)
 		return
 	}
 
 	//show 1 categ
 	if len(pAndroidCategory) > 0 {
-		showCategory(pAppsCat, ANDROID, pAndroidCategory)
+		showCategory(pAppsMeta, ANDROID, pAndroidCategory)
 		return
 	}
 
