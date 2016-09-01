@@ -93,6 +93,11 @@ var (
 	//print_format
 	pPrintFormat = "json"
 	pHelp        = false
+
+	pStoreURI = map[string][]string{
+		ANDROID: {"https://play.google.com/store/apps/details?id=", "&hl=en"},
+		IOS:     {"https://itunes.apple.com/app/id", "?mt=8"},
+	}
 )
 
 type logOverride struct {
@@ -294,13 +299,13 @@ func initEnvParams() {
 	if pAndroidStoreId != "" {
 		sts := strings.Split(pAndroidStoreId, ",")
 		for _, s := range sts {
-			pStores = append(pStores, &StoreApp{OS: ANDROID, URL: "https://play.google.com/store/apps/details?id=" + s + "&hl=en", StoreID: s})
+			pStores = append(pStores, &StoreApp{OS: ANDROID, URL: pStoreURI[ANDROID][0] + s + pStoreURI[ANDROID][1], StoreID: s})
 		}
 	}
 	if pIOSStoreId != "" {
 		sts := strings.Split(pIOSStoreId, ",")
 		for _, s := range sts {
-			pStores = append(pStores, &StoreApp{OS: IOS, URL: "https://itunes.apple.com/app/id" + s + "?mt=8", StoreID: s})
+			pStores = append(pStores, &StoreApp{OS: IOS, URL: pStoreURI[IOS][0] + s + pStoreURI[IOS][1], StoreID: s})
 		}
 	}
 
