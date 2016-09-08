@@ -4,7 +4,7 @@ FROM golang
 #auth
 MAINTAINER bayugyug<bayugyug@gmail.com>
 
-# Golang
+#prepare
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
 git \
 && rm -rf /var/lib/apt/lists/*
@@ -17,14 +17,17 @@ RUN cd /go/src/github.com/bayugyug && git clone https://github.com/bayugyug/stor
 #compile
 RUN cd /go/src/github.com/bayugyug/storemeta && go get -v && go build -v -ldflags "-X main.pBuildTime=`date -u +%Y%m%d.%H%M%S`"
 
+#install
 RUN cd /go/src && go install github.com/bayugyug/storemeta
 
-RUN chmod +x /go/bin/storemeta
+#ADD
+ADD cleanup.sh /go/bin/
 
-#free
-RUN apt-get clean
+#executable
+RUN chmod +x /go/bin/*
 
-RUN apt-get purge
+#cleanup
+RUN /go/bin/cleanup.sh
 
+#main entry
 ENTRYPOINT ["/go/bin/storemeta"]
-
