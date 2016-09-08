@@ -21,7 +21,7 @@ RUN cd /go/src/github.com/bayugyug/storemeta && go get -v && go build -v -ldflag
 RUN cd /go/src && go install github.com/bayugyug/storemeta
 
 #ADD
-ADD cleanup.sh /go/bin/
+RUN cd /go/src/github.com/bayugyug/storemeta  && cp -f Docker/cleanup.sh /go/bin/
 
 #executable
 RUN chmod +x /go/bin/*
