@@ -2,7 +2,7 @@ all: build
 
 build :
 	go get -v
-	go build -v -ldflags "-X main.pBuildTime=`date -u +%Y%m%d.%H%M%S`"
+	CGO_ENABLED=0 GOOS=linux go build -a -tags netgo -v -ldflags "-w -X main.pBuildTime=`date -u +%Y%m%d.%H%M%S`" .
 
 test : build
 	go test -v

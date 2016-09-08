@@ -9,6 +9,7 @@ import (
 	"os"
 	"path"
 	//"path/filepath"
+	"crypto/x509"
 	"regexp"
 	"strings"
 	"time"
@@ -98,6 +99,8 @@ var (
 		ANDROID: {"https://play.google.com/store/apps/details?id=", "&hl=en"},
 		IOS:     {"https://itunes.apple.com/app/id", "?mt=8"},
 	}
+	//ssl certs
+	pool *x509.CertPool
 )
 
 type logOverride struct {
@@ -219,6 +222,10 @@ func init() {
 	initEnvParams()
 	//loggers
 	initLogger(os.Stdout, os.Stdout, os.Stderr)
+
+	//init certs
+	pool = x509.NewCertPool()
+	pool.AppendCertsFromPEM(pemCerts)
 }
 
 //initRecov is for dumpIng segv in
@@ -387,6 +394,8 @@ func overrideLogger(pfx string) {
 func showUsage() {
 
 	msg := `
+
+
 
 	Example:
 

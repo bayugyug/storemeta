@@ -4,4 +4,8 @@
 
 - initial push
 
+###storemeta 1.0beta0.2 , 2016-09-08
+
+- reduce the docker image file size
+
 

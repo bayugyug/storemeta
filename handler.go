@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
@@ -616,12 +617,22 @@ func showCategory(metainfo AppsMeta, os, category string) {
 //getResult http req a url
 func getResult(url string) (int, string) {
 	//client
-	c := &http.Client{
-		Transport: &http.Transport{
-			Dial: (&net.Dialer{
-				Timeout: 300 * time.Second,
-			}).Dial,
-		},
+	/*
+		c := &http.Client{
+			Transport: &http.Transport{
+				Dial: (&net.Dialer{
+					Timeout: 300 * time.Second,
+				}).Dial,
+				TLSClientConfig: &tls.Config{RootCAs: pool},
+			},
+		}
+	*/
+	c := &http.Client{Transport: &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true, RootCAs: pool},
+		Dial: (&net.Dialer{
+			Timeout: 300 * time.Second,
+		}).Dial,
+	},
 	}
 	res, err := c.Get(url)
 	if err != nil {
