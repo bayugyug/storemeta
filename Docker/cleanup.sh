@@ -10,3 +10,4 @@ apt-get autoremove -y
 
 rm -rf /var/lib/{apt,dpkg,cache,log}/
 rm -rf /var/{cache,log}
+rm -rf /usr/local/go

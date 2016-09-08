@@ -1,34 +1,43 @@
 #start
-FROM golang
+#FROM golang
+FROM google/debian:jessie
 
 #auth
 MAINTAINER bayugyug<bayugyug@gmail.com>
 
 #prepare
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
-git \
+curl tar git ca-certificates \
 && rm -rf /var/lib/apt/lists/*
 
 #from remote
-RUN mkdir -p /go/src/github.com/bayugyug
+RUN curl --insecure -O https://storage.googleapis.com/golang/go1.6.linux-amd64.tar.gz
+RUN tar -xvf go1.6.linux-amd64.tar.gz
+RUN mv -f go /usr/local && rm -f go1.6.linux-amd64.tar.gz
 
-RUN cd /go/src/github.com/bayugyug && git clone https://github.com/bayugyug/storemeta.git
+ENV GOROOT=/usr/local/go
+ENV PATH=$PATH:$GOROOT/bin
+ENV GOPATH=/go
+ENV GOSRC=$GOPATH/src
+
+RUN mkdir -p $GOPATH/src/github.com/bayugyug
+
+RUN cd $GOSRC/github.com/bayugyug && git clone https://github.com/bayugyug/storemeta.git
 
 #compile
-RUN cd /go/src/github.com/bayugyug/storemeta && go get -v && CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -v -ldflags "-X main.pBuildTime=`date -u +%Y%m%d.%H%M%S`" .
+RUN cd $GOSRC/github.com/bayugyug/storemeta && go get -v && CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -v -ldflags "-X main.pBuildTime=`date -u +%Y%m%d.%H%M%S`" .
 
 #install
-RUN cd /go/src && go install github.com/bayugyug/storemeta
+RUN cd $GOSRC && go install github.com/bayugyug/storemeta
 
 #ADD
-RUN cd /go/src/github.com/bayugyug/storemeta  && cp -f Docker/cleanup.sh /go/bin/
+RUN cd $GOSRC/github.com/bayugyug/storemeta  && cp -f Docker/cleanup.sh $GOPATH/bin/
 
 #executable
-RUN chmod +x /go/bin/* && rm -fr /go/src
+RUN chmod +x $GOPATH/bin/* && rm -fr $GOSRC
 
 #cleanup
-RUN /go/bin/cleanup.sh
+RUN $GOPATH/bin/cleanup.sh
 
 #main entry
 ENTRYPOINT ["/go/bin/storemeta"]
-
