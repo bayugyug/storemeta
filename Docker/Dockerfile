@@ -10,7 +10,7 @@ git \
 && rm -rf /var/lib/apt/lists/*
 
 #environment 
-ENV GOHOME=/home/mongers
+ENV GOHOME=
 ENV GOPATH=$GOHOME/go
 ENV GOSRC=$GOPATH/src
 ENV PATH=$PATH:$GOPATH/bin
