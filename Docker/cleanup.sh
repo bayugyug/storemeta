@@ -8,7 +8,5 @@ libgcc-4.8-dev:amd64 cpp-4.8 libruby1.9.1 perl-modules vim-runtime
 apt-get clean autoclean
 apt-get autoremove -y
 
-rm -rf /usr/local/go
-rm -rf /usr/local/go1.*.linux-amd64.tar.gz
 rm -rf /var/lib/{apt,dpkg,cache,log}/
 rm -rf /var/{cache,log}
