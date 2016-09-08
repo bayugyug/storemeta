@@ -9,25 +9,30 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends \
 git \
 && rm -rf /var/lib/apt/lists/*
 
-#from remote
-RUN mkdir -p /go/src/github.com/bayugyug
+#environment 
+ENV GOHOME=/home/mongers
+ENV GOPATH=$GOHOME/go
+ENV GOSRC=$GOPATH/src
+ENV PATH=$PATH:$GOPATH/bin
 
-RUN cd /go/src/github.com/bayugyug && git clone https://github.com/bayugyug/storemeta.git
+RUN mkdir -p $GOPATH/bin  $GOSRC/github.com/bayugyug
+
+RUN cd $GOSRC/github.com/bayugyug && git clone https://github.com/bayugyug/storemeta.git
 
 #compile
-RUN cd /go/src/github.com/bayugyug/storemeta && go get -v && go build -v -ldflags "-X main.pBuildTime=`date -u +%Y%m%d.%H%M%S`"
+RUN cd $GOSRC/github.com/bayugyug/storemeta && go get -v && go build -v -ldflags "-X main.pBuildTime=`date -u +%Y%m%d.%H%M%S`"
 
 #install
-RUN cd /go/src && go install github.com/bayugyug/storemeta
+RUN cd $GOSRC && go install github.com/bayugyug/storemeta
 
 #ADD
-RUN cd /go/src/github.com/bayugyug/storemeta  && cp -f Docker/cleanup.sh /go/bin/
+RUN cd $GOSRC/github.com/bayugyug/storemeta  && cp -f Docker/cleanup.sh $GOPATH/bin/
 
 #executable
-RUN chmod +x /go/bin/*
+RUN chmod +x $GOPATH/bin/*
 
 #cleanup
-RUN /go/bin/cleanup.sh
+RUN $GOPATH/bin/cleanup.sh
 
 #main entry
-ENTRYPOINT ["/go/bin/storemeta"]
+ENTRYPOINT ["storemeta"]

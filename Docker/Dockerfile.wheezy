@@ -15,9 +15,13 @@ RUN curl --insecure -O https://storage.googleapis.com/golang/go1.6.linux-amd64.t
 RUN tar -xvf go1.6.linux-amd64.tar.gz
 RUN mv -f go /usr/local && rm -f go1.6.linux-amd64.tar.gz
 
+
+GOHOME=/home/gomongers
+RUN mkdir -p $GOHOME/go/src
+
 ENV GOROOT=/usr/local/go
 ENV PATH=$PATH:$GOROOT/bin
-ENV GOPATH=/go
+ENV GOPATH=$GOHOME/go
 ENV GOSRC=$GOPATH/src
 
 RUN mkdir -p $GOPATH/src/github.com/bayugyug
