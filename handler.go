@@ -28,7 +28,7 @@ type AppsMetaInfos interface {
 	FormatIOS(*goquery.Document, *StoreApp) *App
 	ShowCategories(string)
 	ShowlistApps(string, string)
-	PrintList(string, string, string)
+	PrintList(string, string, string) []*StoreApp
 }
 
 //AppsMeta empty holder
@@ -548,19 +548,19 @@ func (metainfo AppsMeta) ShowlistApps(os, category string) {
 }
 
 //PrintList show the list of the categories
-func (metainfo AppsMeta) PrintList(os, category, url string) {
+func (metainfo AppsMeta) PrintList(os, category, url string) []*StoreApp {
+	var storelist []*StoreApp
 	status, body := getResult(url)
 	if status != 200 || body == "" {
 		log.Println("ERROR: invalid http status", status)
-		return
+		return storelist
 	}
 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(body))
 	if err != nil {
 		log.Println("ERROR: ", err)
-		return
+		return storelist
 	}
 	appt := 0
-	var storelist []*StoreApp
 	switch os {
 	case IOS:
 		//app list
@@ -603,6 +603,8 @@ func (metainfo AppsMeta) PrintList(os, category, url string) {
 	jdata, _ := json.MarshalIndent(storelist, "", "\t")
 	//dont leave your friend behind :-)
 	log.Println(string(jdata))
+	//give it back
+	return storelist
 }
 
 //showCategory shows list of categories or list of apps per category
