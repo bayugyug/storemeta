@@ -2,7 +2,7 @@ all: build
 
 build :
 	go get -v
-	CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -tags netgo -installsuffix netgo -v -ldflags "-w -X main.pBuildTime=`date -u +%Y%m%d.%H%M%S`" .
+	CGO_ENABLED=0 GOOS=linux go build -a -tags netgo -installsuffix netgo -v -ldflags "-w -X main.pBuildTime=`date -u +%Y%m%d.%H%M%S`" .
 
 test : build
 	go test -v
@@ -22,7 +22,10 @@ docker-wheezy: prepare
 	cd Docker && sudo docker build --no-cache --rm -t bayugyug/storemeta -f  Dockerfile.wheezy .
 
 docker-scratch: prepare
-	cd Docker && sudo docker build --no-cache --rm -t bayugyug/storemeta:lean -f  Dockerfile.scratch .
+	cd Docker && sudo docker build --no-cache --rm -t bayugyug/storemeta:scratch -f  Dockerfile.scratch .
+
+docker-alpine: prepare
+	cd Docker && sudo docker build --no-cache --rm -t bayugyug/storemeta:alpine  -f  Dockerfile.alpine .
 
 clean:
 	rm -f storemeta Docker/storemeta

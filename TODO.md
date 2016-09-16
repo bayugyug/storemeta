@@ -137,14 +137,6 @@
         
     docker run -v $(pwd):/go/bin --rm  golang go get -v -installsuffix cgo -tags netgo -installsuffix netgo github.com/bayugyug/storemeta/...
 
-    docker build -t storemeta .
-
-    
-    docker images storemeta
-    REPOSITORY          TAG                 IMAGE ID            CREATED              SIZE
-    storemeta           latest              1148e449ba8c        About a minute ago   9.876 MB
-
-
     docker build -t bayugyug/storemeta:min -f Docker/Dockerfile.scratch .
     
     $ docker login
