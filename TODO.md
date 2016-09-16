@@ -144,6 +144,23 @@
     REPOSITORY          TAG                 IMAGE ID            CREATED              SIZE
     storemeta           latest              1148e449ba8c        About a minute ago   9.876 MB
 
+
+    docker build -t bayugyug/storemeta:min -f Docker/Dockerfile.scratch .
+    
+    $ docker login
+    Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
+    Username (bayugyug): bayugyug
+    Password:
+    Login Succeeded
+
+    < bayugyug@bayugyug >
+    ** /home/bayugyug/mnt/storemeta
+
+    $ docker push bayugyug/storemeta:min
+    The push refers to a repository [docker.io/bayugyug/storemeta]
+    6b885b2e1e47: Pushed
+    min: digest: sha256:fe5828f8727ad27ab2373f7c0335d4c9bb8d2c0040406631aba71868f875cade size: 528
+
     
 ###  gRPC
     go get -u -v google.golang.org/grpc
