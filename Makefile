@@ -19,13 +19,13 @@ docker-devel : prepare
 	cd Docker && sudo docker build --no-cache --rm -t bayugyug/storemeta .
 
 docker-wheezy: prepare
-	cd Docker && sudo docker build --no-cache --rm -t bayugyug/storemeta -f  Dockerfile.wheezy .
+	cd Docker && sudo docker build --no-cache --rm -t bayugyug/storemeta -f  wheezy/Dockerfile .
 
 docker-scratch: prepare
-	cd Docker && sudo docker build --no-cache --rm -t bayugyug/storemeta:scratch -f  Dockerfile.scratch .
+	cd Docker && sudo docker build --no-cache --rm -t bayugyug/storemeta:scratch -f  scratch/Dockerfile .
 
 docker-alpine: prepare
-	cd Docker && sudo docker build --no-cache --rm -t bayugyug/storemeta:alpine  -f  Dockerfile.alpine .
+	cd Docker && sudo docker build --no-cache --rm -t bayugyug/storemeta:alpine  -f  alpine/Dockerfile .
 
 clean:
 	rm -f storemeta Docker/storemeta
