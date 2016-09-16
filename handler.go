@@ -560,6 +560,9 @@ func (metainfo AppsMeta) PrintList(os, category, url string) []*StoreApp {
 		log.Println("ERROR: ", err)
 		return storelist
 	}
+
+	var storeDone = make(map[string]string)
+
 	appt := 0
 	switch os {
 	case IOS:
@@ -575,8 +578,11 @@ func (metainfo AppsMeta) PrintList(os, category, url string) []*StoreApp {
 						if ztores[0] != "" {
 							storeid = strings.TrimSpace(ztores[0])
 						}
-						storelist = append(storelist, &StoreApp{Preview: strings.TrimSpace(v.Val), Category: category, StoreID: strings.Replace(storeid, "id", "", -1)})
-						appt++
+						if _, ok := storeDone[storeid]; !ok {
+							storelist = append(storelist, &StoreApp{Preview: strings.TrimSpace(v.Val), Category: category, StoreID: strings.Replace(storeid, "id", "", -1)})
+							appt++
+							storeDone[storeid] = storeid
+						}
 					}
 
 				}
@@ -592,8 +598,11 @@ func (metainfo AppsMeta) PrintList(os, category, url string) []*StoreApp {
 					xtores := strings.Split(v.Val, "details?id=")
 					if len(xtores) >= 2 {
 						storeid = strings.TrimSpace(xtores[1])
-						storelist = append(storelist, &StoreApp{Preview: "https://play.google.com" + strings.TrimSpace(v.Val), Category: category, StoreID: strings.TrimSpace(storeid)})
-						appt++
+						if _, ok := storeDone[storeid]; !ok {
+							storelist = append(storelist, &StoreApp{Preview: "https://play.google.com" + strings.TrimSpace(v.Val), Category: category, StoreID: strings.TrimSpace(storeid)})
+							appt++
+							storeDone[storeid] = storeid
+						}
 					}
 
 				}
@@ -619,16 +628,6 @@ func showCategory(metainfo AppsMeta, os, category string) {
 //getResult http req a url
 func getResult(url string) (int, string) {
 	//client
-	/*
-		c := &http.Client{
-			Transport: &http.Transport{
-				Dial: (&net.Dialer{
-					Timeout: 300 * time.Second,
-				}).Dial,
-				TLSClientConfig: &tls.Config{RootCAs: pool},
-			},
-		}
-	*/
 	c := &http.Client{Transport: &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true, RootCAs: pool},
 		Dial: (&net.Dialer{

@@ -133,6 +133,20 @@
 
         ENTRYPOINT ["/go/bin/storemeta"]
 
-### 
+###  Reduce file size
+        
+    docker run -v $(pwd):/go/bin --rm  golang go get -v -installsuffix cgo -tags netgo -installsuffix netgo github.com/bayugyug/storemeta/...
 
+    docker build -t storemeta .
+
+    
+    docker images storemeta
+    REPOSITORY          TAG                 IMAGE ID            CREATED              SIZE
+    storemeta           latest              1148e449ba8c        About a minute ago   9.876 MB
+
+    
+###  gRPC
+    go get -u -v google.golang.org/grpc
+    go get -u -v github.com/golang/protobuf/{proto,protoc-gen-go}
+    export PATH=$PATH:$GOPATH/bin
 

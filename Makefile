@@ -21,6 +21,9 @@ docker-devel : prepare
 docker-wheezy: prepare
 	cd Docker && sudo docker build --no-cache --rm -t bayugyug/storemeta -f  Dockerfile.wheezy .
 
+docker-scratch: prepare
+	cd Docker && sudo docker build --no-cache --rm -t bayugyug/storemeta:lean -f  Dockerfile.scratch .
+
 clean:
 	rm -f storemeta Docker/storemeta
 	rm -f benchmarks.xml coverage.xml vet.txt lint.txt
