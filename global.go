@@ -217,7 +217,7 @@ func init() {
 	//recovery
 	initRecov()
 	//re-fmt logger
-	overrideLogger("")
+	//overrideLogger("")
 	//evt
 	initEnvParams()
 	//loggers
@@ -428,8 +428,8 @@ func showUsage() {
 		./storemeta  -i="544007664,535886823,643496868"
 
 `
-	log.Println("Ver:", pVersion, "\n")
+	fmt.Println("Ver:", pVersion, "\n")
 	flag.PrintDefaults()
-	log.Println(msg)
+	fmt.Println(msg)
 	os.Exit(0)
 }

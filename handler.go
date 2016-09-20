@@ -480,7 +480,7 @@ func (metainfo AppsMeta) Show(doneFlg chan bool, wg *sync.WaitGroup) {
 	//json fmt
 	jdata, _ := json.MarshalIndent(applist, "", "\t")
 	//dont leave your friend behind :-)
-	log.Println(string(jdata))
+	fmt.Println(string(jdata))
 	//send signal -> DONE
 	doneFlg <- true
 }
@@ -514,7 +514,7 @@ func (metainfo AppsMeta) ShowCategories(os string) {
 	if len(categlist) > 0 {
 		jdata, _ := json.MarshalIndent(categlist, "", "\t")
 		//dont leave your friend behind :-)
-		log.Println(string(jdata))
+		fmt.Println(string(jdata))
 	}
 }
 
@@ -611,7 +611,7 @@ func (metainfo AppsMeta) PrintList(os, category, url string) []*StoreApp {
 	}
 	jdata, _ := json.MarshalIndent(storelist, "", "\t")
 	//dont leave your friend behind :-)
-	log.Println(string(jdata))
+	fmt.Println(string(jdata))
 	//give it back
 	return storelist
 }
