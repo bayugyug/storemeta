@@ -1,50 +1,44 @@
-#start
 #FROM golang
-FROM google/debian:jessie
+FROM buildpack-deps:wheezy-scm
 
 #auth
 MAINTAINER bayugyug<bayugyug@gmail.com>
 
-#prepare
-RUN apt-get update -y && apt-get install -y --no-install-recommends \
-curl tar git ca-certificates apt-transport-https \
-&& rm -rf /var/lib/apt/lists/*
+# gcc for cgo
+RUN apt-get update && apt-get install -y --no-install-recommends \
+		make \
+		git \
+	&& rm -rf /var/lib/apt/lists/*
 
-#from remote
-RUN curl --insecure -O https://storage.googleapis.com/golang/go1.6.linux-amd64.tar.gz
-RUN tar -xvf go1.6.linux-amd64.tar.gz
-RUN mv -f go /usr/local && rm -f go1.6.linux-amd64.tar.gz
+ENV GOLANG_VERSION 1.7.1
+ENV GOLANG_DOWNLOAD_URL https://golang.org/dl/go$GOLANG_VERSION.linux-amd64.tar.gz
+ENV GOLANG_DOWNLOAD_SHA256 43ad621c9b014cde8db17393dc108378d37bc853aa351a6c74bf6432c1bbd182
 
+RUN curl -fsSL "$GOLANG_DOWNLOAD_URL" -o golang.tar.gz \
+	&& echo "$GOLANG_DOWNLOAD_SHA256  golang.tar.gz" | sha256sum -c - \
+	&& tar -C /usr/local -xzf golang.tar.gz \
+	&& rm golang.tar.gz
 
-ENV GOHOME=/mongers
-ENV GOROOT=/usr/local/go
-ENV PATH=$PATH:$GOROOT/bin
-ENV GOPATH=$GOHOME/go
+ENV GOPATH=/go
 ENV GOSRC=$GOPATH/src
+ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 
+RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" "$GOSRC/github.com/bayugyug" && chmod -R 777 "$GOPATH"
 
-RUN mkdir -p $GOHOME/go/src
-RUN mkdir -p $GOPATH/src/github.com/bayugyug
+WORKDIR $GOPATH
 
-#copy
-COPY cleanup.sh $GOPATH/bin/
-
-RUN cd $GOSRC/github.com/bayugyug && git clone https://github.com/bayugyug/storemeta.git
-
-#compile
-RUN cd $GOSRC/github.com/bayugyug/storemeta && go get -v && CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -tags netgo -installsuffix netgo -v -ldflags "-X main.pBuildTime=`date -u +%Y%m%d.%H%M%S`" .
-
-#install
-RUN cd $GOSRC && go install github.com/bayugyug/storemeta
-
-#ADD
-RUN cd $GOSRC/github.com/bayugyug/storemeta  && cp -f storemeta Docker/cleanup.sh $GOPATH/bin/
-
-#executable
-RUN chmod +x $GOPATH/bin/* && rm -fr $GOSRC
-
-#cleanup
-RUN $GOPATH/bin/cleanup.sh && rm -fr $GOSRC
+RUN cd $GOSRC/github.com/bayugyug && \
+    git clone https://github.com/bayugyug/storemeta.git && \
+    cd $GOSRC/github.com/bayugyug/storemeta && \
+    go get -v && \
+    go build -tags netgo -installsuffix netgo -installsuffix cgo -v -ldflags "-X main.pBuildTime=`date -u +%Y%m%d.%H%M%S`" && \
+    cd $GOSRC && \
+    go install github.com/bayugyug/storemeta && \
+    cd $GOSRC/github.com/bayugyug/storemeta  && \
+    cp -f Docker/cleanup.sh $GOPATH/bin/ && \
+    cp -f Docker/wheezy/go-wrapper /usr/local/bin/ && \
+    chmod +x $GOPATH/bin/* && \
+    $GOPATH/bin/cleanup.sh
 
 #main entry
-ENTRYPOINT [ "/mongers/go/bin/storemeta" ]
+ENTRYPOINT [ "storemeta" ]
