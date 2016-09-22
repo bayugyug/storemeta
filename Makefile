@@ -19,6 +19,7 @@ docker-devel : prepare
 	cd Docker && sudo docker build --no-cache --rm -t bayugyug/storemeta .
 
 docker-wheezy: prepare
+	-@sudo docker rmi -f bayugyug/storemeta 2>/dev/null || true
 	cd Docker && sudo docker build --no-cache --rm -t bayugyug/storemeta -f  wheezy/Dockerfile .
 
 docker-scratch: prepare
