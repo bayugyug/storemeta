@@ -34,7 +34,7 @@ func formatHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 	var p = strings.TrimSpace(q.Get("p"))
 	var m = strings.ToUpper(strings.TrimSpace(ps.ByName("mode")))
 
-	//re-init it here
+	//re-init it here, eventhoug, its defined @ global.go
 	pAppsData = make(chan *App)
 	pAppList = []*App{}
 	pStores = []*StoreApp{}
@@ -80,7 +80,7 @@ func formatHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 	}
 
 	//reset
-	if ok, _ := regexp.MatchString("?i^list-category-(ios|android)w$", m); ok {
+	if ok, _ := regexp.MatchString("(?i)^list-category-(ios|android)$", m); ok {
 		p = ""
 	}
 	result := v.Format(pAppsMeta, v.Mode, p)
