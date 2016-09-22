@@ -41,7 +41,7 @@ RUN chmod +x $GOBIN/*
 #cleanup
 RUN du -sh /go/* /* && ls -ltrha $GOBIN/*
 
-RUN apk del .build-deps go git && \
+RUN apk del .build-deps go git gcc musl-dev && \
     rm -rf /var/lib/{apt,dpkg,cache,log}/ &&  \
     rm -rf /var/{cache,log} && \
     rm -fr /go/pkg  /go/src
