@@ -578,3 +578,28 @@ $ ./storemeta -category-android=FAMILY_AGE_AGE_RANGE1
 
 ```
 
+
+
+## As HTTP Server
+
+- [x] In order to  use it via CURL/WGET or Browser
+
+
+```sh
+
+    sudo  sysctl -w net.ipv4.ip_forward=1
+
+    sudo  docker run -p 7000-8000:7000-8000 -v `pwd`:`pwd` -w `pwd` -d --name storemeta-alpine  bayugyug/storemeta:alpine --http --port 7778
+
+    curl -i -v 'http://127.0.0.1:7777/list-category-android'
+
+    curl -i -v 'http://127.0.0.1:7777/list-category-ios'
+
+    curl -i -v 'http://127.0.0.1:7777/category-android/?p=GAME_ACTION'
+
+    curl -i -v 'http://127.0.0.1:7777/category-ios/?p=GAMES_ACTION'
+
+    curl -i -v 'http://127.0.0.1:7777/storeid/?a=com.google.android.apps.photos&i=293622097'
+
+```
+

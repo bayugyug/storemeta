@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
 	"os"
 )
 
@@ -11,25 +13,38 @@ func main() {
 
 	//show cat-list
 	if pIOSList {
-		showCategory(pAppsMeta, IOS, "")
+		fmt.Println(showCategory(pAppsMeta, IOS, ""))
 		return
 	}
 	//show cat-list
 	if pAndroidList {
-		showCategory(pAppsMeta, ANDROID, "")
+		fmt.Println(showCategory(pAppsMeta, ANDROID, ""))
 		return
 	}
 	//show 1 categ
 	if len(pIOSCategory) > 0 {
-		showCategory(pAppsMeta, IOS, pIOSCategory)
+		fmt.Println(showCategory(pAppsMeta, IOS, pIOSCategory))
 		return
 	}
 	//show 1 categ
 	if len(pAndroidCategory) > 0 {
-		showCategory(pAppsMeta, ANDROID, pAndroidCategory)
+		fmt.Println(showCategory(pAppsMeta, ANDROID, pAndroidCategory))
+		return
+	}
+	//serve http
+	if pHttpServe {
+		initHttpRouters()
 		return
 	}
 	//show 1x1 per storeid
 	handler(pAppsMeta)
+
+	//show the list saved
+	if len(pAppList) > 0 {
+		//json fmt
+		jdata, _ := json.MarshalIndent(pAppList, "", "\t")
+		//dont leave your friend behind :-)
+		fmt.Println(string(jdata))
+	}
 	os.Exit(0)
 }

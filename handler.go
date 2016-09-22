@@ -26,8 +26,8 @@ type AppsMetaInfos interface {
 	Show(chan bool, *sync.WaitGroup)
 	FormatAndroid(*goquery.Document, *StoreApp) *App
 	FormatIOS(*goquery.Document, *StoreApp) *App
-	ShowCategories(string)
-	ShowlistApps(string, string)
+	ShowCategories(string) []string
+	ShowlistApps(string, string) []*StoreApp
 	PrintList(string, string, string) []*StoreApp
 }
 
@@ -64,7 +64,6 @@ func handler(metainfo AppsMetaInfos) {
 	//stats
 	uwg.Wait()
 	close(uFlag)
-
 }
 
 //Process do the processing of the appstore URL
@@ -463,7 +462,6 @@ func (metainfo AppsMeta) Show(doneFlg chan bool, wg *sync.WaitGroup) {
 		}
 	}()
 
-	var applist []*App
 	for {
 		row, more := <-pAppsData
 		if !more {
@@ -474,19 +472,15 @@ func (metainfo AppsMeta) Show(doneFlg chan bool, wg *sync.WaitGroup) {
 			log.Println("Signal detected ...")
 			break
 		}
-		applist = append(applist, row)
+		pAppList = append(pAppList, row)
 	}
 
-	//json fmt
-	jdata, _ := json.MarshalIndent(applist, "", "\t")
-	//dont leave your friend behind :-)
-	fmt.Println(string(jdata))
 	//send signal -> DONE
 	doneFlg <- true
 }
 
 //ShowCategories show the list of categories for both stores
-func (metainfo AppsMeta) ShowCategories(os string) {
+func (metainfo AppsMeta) ShowCategories(os string) []string {
 	//init
 	categlist := []string{}
 	categ := ""
@@ -506,22 +500,20 @@ func (metainfo AppsMeta) ShowCategories(os string) {
 			if strings.EqualFold(pPrintFormat, "json") {
 				categlist = append(categlist, categ)
 			} else {
-				log.Println(t, categ)
+				categlist = append(categlist, fmt.Sprintf("%d. %s\n", t, categ))
 			}
 		}
 	}
 	//json fmt
-	if len(categlist) > 0 {
-		jdata, _ := json.MarshalIndent(categlist, "", "\t")
-		//dont leave your friend behind :-)
-		fmt.Println(string(jdata))
-	}
+	return categlist
 }
 
 //ShowlistApps show the list of apps per category for both stores
-func (metainfo AppsMeta) ShowlistApps(os, category string) {
+func (metainfo AppsMeta) ShowlistApps(os, category string) []*StoreApp {
 
 	categ := ""
+	var appstores []*StoreApp
+
 	t := 0
 	re := regexp.MustCompile("[^0-9A-Za-z]+")
 	if _, ok := pCategories[os]; ok {
@@ -532,10 +524,9 @@ func (metainfo AppsMeta) ShowlistApps(os, category string) {
 			} else if os == ANDROID {
 				cats := strings.Split(v, "/")
 				categ = re.ReplaceAllString(strings.ToUpper(cats[6]), "_")
-
 			}
 			if strings.EqualFold(category, categ) {
-				metainfo.PrintList(os, category, v)
+				appstores = metainfo.PrintList(os, category, v)
 				t++
 				break
 			}
@@ -545,6 +536,7 @@ func (metainfo AppsMeta) ShowlistApps(os, category string) {
 	if t == 0 {
 		log.Println("\n\n", os, "Category not found!", category)
 	}
+	return appstores
 }
 
 //PrintList show the list of the categories
@@ -609,20 +601,22 @@ func (metainfo AppsMeta) PrintList(os, category, url string) []*StoreApp {
 			}
 		})
 	}
-	jdata, _ := json.MarshalIndent(storelist, "", "\t")
-	//dont leave your friend behind :-)
-	fmt.Println(string(jdata))
 	//give it back
 	return storelist
 }
 
 //showCategory shows list of categories or list of apps per category
-func showCategory(metainfo AppsMeta, os, category string) {
+func showCategory(metainfo AppsMeta, os, category string) string {
+	var jdata []byte
 	if len(category) > 0 {
-		metainfo.ShowlistApps(os, category)
+		res := metainfo.ShowlistApps(os, category)
+		jdata, _ = json.MarshalIndent(res, "", "\t")
 	} else {
-		metainfo.ShowCategories(os)
+		res := metainfo.ShowCategories(os)
+		jdata, _ = json.MarshalIndent(res, "", "\t")
 	}
+	//show
+	return string(jdata)
 }
 
 //getResult http req a url

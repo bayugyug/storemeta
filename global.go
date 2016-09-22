@@ -1,15 +1,16 @@
 package main
 
 import (
+	"crypto/x509"
 	"flag"
 	"fmt"
+	"github.com/julienschmidt/httprouter"
 	"io"
 	"log"
 	"math/rand"
+	"net/http"
 	"os"
 	"path"
-	//"path/filepath"
-	"crypto/x509"
 	"regexp"
 	"strings"
 	"time"
@@ -26,6 +27,8 @@ const (
 	usagePrintFormat     = "use to enable what format is used in showing the output"
 	IOS                  = "IOS"
 	ANDROID              = "ANDROID"
+	usageHttp            = "use to serve the results via HTTP"
+	usageHttpPort        = "use to serve the results via HTTP @ Port No."
 )
 
 //Store data holder for ios data
@@ -60,6 +63,11 @@ type App struct {
 	TotalDownloads  string `json:"total-downloads"`
 	Developer       string `json:"developer"`
 	DeveloperSite   string `json:"developer-site"`
+}
+
+type Formatter struct {
+	Mode   string
+	Format func(AppsMeta, string, string) string
 }
 
 var (
@@ -101,14 +109,20 @@ var (
 	}
 	//ssl certs
 	pool *x509.CertPool
+
+	pAppList []*App
+
+	pHttpPort  = "7777"
+	pHttpServe = false
+
+	Formatters map[string]Formatter
+	pAppsData  chan *App
+	pStores    []*StoreApp
 )
 
 type logOverride struct {
 	Prefix string `json:"prefix,omitempty"`
 }
-
-var pAppsData = make(chan *App)
-var pStores []*StoreApp
 
 var pCategories = map[string][]string{
 	ANDROID: {
@@ -226,6 +240,15 @@ func init() {
 	//init certs
 	pool = x509.NewCertPool()
 	pool.AppendCertsFromPEM(pemCerts)
+
+	//in
+	Formatters = map[string]Formatter{
+		"LIST-CATEGORY-IOS":     {IOS, showCategory},
+		"LIST-CATEGORY-ANDROID": {ANDROID, showCategory},
+		"CATEGORY-IOS":          {IOS, showCategory},
+		"CATEGORY-ANDROID":      {ANDROID, showCategory},
+	}
+	pAppsData = make(chan *App)
 }
 
 //initRecov is for dumpIng segv in
@@ -292,6 +315,10 @@ func initEnvParams() {
 	flag.StringVar(&pPrintFormat, "pf", pPrintFormat, usagePrintFormat+" (shorthand)")
 
 	flag.BoolVar(&pHelp, "h", pHelp, "Show this help/how-to")
+
+	flag.BoolVar(&pHttpServe, "http", pHttpServe, usageHttp)
+	flag.StringVar(&pHttpPort, "port", pHttpPort, usageHttpPort)
+
 	flag.Parse()
 
 	//either 1 should be present
@@ -300,7 +327,8 @@ func initEnvParams() {
 	}
 	if pIOSStoreId == "" && pAndroidStoreId == "" &&
 		!pIOSList && !pAndroidList &&
-		pIOSCategory == "" && pAndroidCategory == "" {
+		pIOSCategory == "" && pAndroidCategory == "" &&
+		!pHttpServe {
 		showUsage()
 	}
 	if pAndroidStoreId != "" {
@@ -316,6 +344,18 @@ func initEnvParams() {
 		}
 	}
 
+}
+
+//initHttpRouters, init the routing
+func initHttpRouters() {
+	pRouter := httprouter.New()
+	pRouter.GET("/", indexHandler)
+	pRouter.GET("/:mode", formatHandler)
+	pRouter.POST("/:mode", formatHandler)
+	pRouter.GET("/:mode/", formatHandler)
+	pRouter.POST("/:mode/", formatHandler)
+	fmt.Println("Storemeta\n\nVer: "+pVersion+"\n\nReady to serve @ port:", strings.Replace(pHttpPort, ":", "", -1))
+	log.Fatal(http.ListenAndServe(":"+pHttpPort, pRouter))
 }
 
 //formatLogger try to init all filehandles for logs
