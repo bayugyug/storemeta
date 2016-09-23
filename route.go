@@ -44,37 +44,36 @@ func formatHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 	if !ok {
 		if !strings.EqualFold(m, "STOREID") {
 			http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
-		} else {
-			//store-ids here
-			androids := strings.Split(strings.TrimSpace(q.Get("a")), ",")
-			for _, s := range androids {
-				if len(s) > 0 {
-					pStores = append(pStores, &StoreApp{OS: ANDROID, URL: pStoreURI[ANDROID][0] + s + pStoreURI[ANDROID][1], StoreID: s})
-				}
+			return
+		}
+		//store-ids here
+		androids := strings.Split(strings.TrimSpace(q.Get("a")), ",")
+		for _, s := range androids {
+			if len(s) > 0 {
+				pStores = append(pStores, &StoreApp{OS: ANDROID, URL: pStoreURI[ANDROID][0] + s + pStoreURI[ANDROID][1], StoreID: s})
 			}
-			ioss := strings.Split(strings.TrimSpace(q.Get("i")), ",")
-			for _, s := range ioss {
-				if len(s) > 0 {
-					pStores = append(pStores, &StoreApp{OS: IOS, URL: pStoreURI[IOS][0] + s + pStoreURI[IOS][1], StoreID: s})
-				}
+		}
+		ioss := strings.Split(strings.TrimSpace(q.Get("i")), ",")
+		for _, s := range ioss {
+			if len(s) > 0 {
+				pStores = append(pStores, &StoreApp{OS: IOS, URL: pStoreURI[IOS][0] + s + pStoreURI[IOS][1], StoreID: s})
 			}
-			fmt.Println("STORE-IDS: ANDROID: ", strings.TrimSpace(q.Get("a"))+" ; IOS: "+strings.TrimSpace(q.Get("i")))
-			if len(pStores) == 0 {
-				http.Error(w, "StoreId is Missing / "+http.StatusText(http.StatusNotFound), http.StatusNotFound)
-				return
-			}
+		}
+		if len(pStores) == 0 {
+			http.Error(w, "StoreId is Missing / "+http.StatusText(http.StatusNotFound), http.StatusNotFound)
+			return
+		}
 
-			//handle the storeids
-			handler(pAppsMeta)
+		//handle the storeids
+		handler(pAppsMeta)
 
-			//show the list saved
-			if len(pAppList) > 0 {
-				//json fmt
-				jdata, _ := json.MarshalIndent(pAppList, "", "\t")
-				//dont leave your friend behind :-)
-				w.Header().Set("Content-Type", "application/json")
-				fmt.Fprint(w, string(jdata))
-			}
+		//show the list saved
+		if len(pAppList) > 0 {
+			//json fmt
+			jdata, _ := json.MarshalIndent(pAppList, "", "\t")
+			//dont leave your friend behind :-)
+			w.Header().Set("Content-Type", "application/json")
+			fmt.Fprint(w, string(jdata))
 		}
 		return
 	}
