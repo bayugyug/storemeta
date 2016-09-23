@@ -325,25 +325,19 @@ func initEnvParams() {
 	if pHelp {
 		showUsage()
 	}
+
 	if pIOSStoreId == "" && pAndroidStoreId == "" &&
 		!pIOSList && !pAndroidList &&
 		pIOSCategory == "" && pAndroidCategory == "" &&
 		!pHttpServe {
 		showUsage()
 	}
-	if pAndroidStoreId != "" {
-		sts := strings.Split(pAndroidStoreId, ",")
-		for _, s := range sts {
-			pStores = append(pStores, &StoreApp{OS: ANDROID, URL: pStoreURI[ANDROID][0] + s + pStoreURI[ANDROID][1], StoreID: s})
-		}
-	}
-	if pIOSStoreId != "" {
-		sts := strings.Split(pIOSStoreId, ",")
-		for _, s := range sts {
-			pStores = append(pStores, &StoreApp{OS: IOS, URL: pStoreURI[IOS][0] + s + pStoreURI[IOS][1], StoreID: s})
-		}
-	}
 
+	if pAndroidStoreId != "" || pIOSStoreId != "" {
+		ands := strings.Split(pAndroidStoreId, ",")
+		ioss := strings.Split(pIOSStoreId, ",")
+		queryStoreIds(ands, ioss)
+	}
 }
 
 //initHttpRouters, init the routing

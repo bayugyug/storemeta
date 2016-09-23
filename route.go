@@ -47,18 +47,9 @@ func formatHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 			return
 		}
 		//store-ids here
-		androids := strings.Split(strings.TrimSpace(q.Get("a")), ",")
-		for _, s := range androids {
-			if len(s) > 0 {
-				pStores = append(pStores, &StoreApp{OS: ANDROID, URL: pStoreURI[ANDROID][0] + s + pStoreURI[ANDROID][1], StoreID: s})
-			}
-		}
+		ands := strings.Split(strings.TrimSpace(q.Get("a")), ",")
 		ioss := strings.Split(strings.TrimSpace(q.Get("i")), ",")
-		for _, s := range ioss {
-			if len(s) > 0 {
-				pStores = append(pStores, &StoreApp{OS: IOS, URL: pStoreURI[IOS][0] + s + pStoreURI[IOS][1], StoreID: s})
-			}
-		}
+		queryStoreIds(ands, ioss)
 		if len(pStores) == 0 {
 			http.Error(w, "StoreId is Missing / "+http.StatusText(http.StatusNotFound), http.StatusNotFound)
 			return
@@ -87,4 +78,18 @@ func formatHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 	//good
 	w.Header().Set("Content-Type", "application/json")
 	fmt.Fprint(w, string(result))
+}
+
+func queryStoreIds(androids, ioss []string) {
+	//store-ids here
+	for _, s := range androids {
+		if len(s) > 0 {
+			pStores = append(pStores, &StoreApp{OS: ANDROID, URL: pStoreURI[ANDROID][0] + s + pStoreURI[ANDROID][1], StoreID: s})
+		}
+	}
+	for _, s := range ioss {
+		if len(s) > 0 {
+			pStores = append(pStores, &StoreApp{OS: IOS, URL: pStoreURI[IOS][0] + s + pStoreURI[IOS][1], StoreID: s})
+		}
+	}
 }
