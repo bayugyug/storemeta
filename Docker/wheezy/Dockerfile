@@ -23,11 +23,9 @@ ENV GOPATH=/go
 ENV GOSRC=$GOPATH/src
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 
-RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" "$GOSRC/github.com/bayugyug" && chmod -R 777 "$GOPATH"
-
 WORKDIR $GOPATH
 
-RUN cd $GOSRC/github.com/bayugyug && \
+RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" "$GOSRC/github.com/bayugyug" && chmod -R 777 "$GOPATH" && cd $GOSRC/github.com/bayugyug && \
     git clone https://github.com/bayugyug/storemeta.git && \
     cd $GOSRC/github.com/bayugyug/storemeta && \
     go get -v && \
