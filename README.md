@@ -448,3 +448,6 @@ $ ./storemeta -category-android=FAMILY_AGE_AGE_RANGE1
 
 ```
 
+### License
+
+[MIT](http://xlab.mit-license.org)
