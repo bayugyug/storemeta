@@ -34,11 +34,12 @@ func formatHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 	var p = strings.TrimSpace(q.Get("p"))
 	var m = strings.ToUpper(strings.TrimSpace(ps.ByName("mode")))
 
-	//re-init it here, eventhoug, its defined @ global.go
+	//re-init it here, eventhough, its defined @ global.go
 	pAppsData = make(chan *App)
 	pAppList = []*App{}
 	pStores = []*StoreApp{}
-
+	//hdrset
+	w.Header().Set("Content-Type", "application/json")
 	//not-found
 	v, ok := Formatters[m]
 	if !ok {
@@ -63,7 +64,6 @@ func formatHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 			//json fmt
 			jdata, _ := json.MarshalIndent(pAppList, "", "\t")
 			//dont leave your friend behind :-)
-			w.Header().Set("Content-Type", "application/json")
 			fmt.Fprint(w, string(jdata))
 		}
 		return
@@ -76,7 +76,6 @@ func formatHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 	result := v.Format(pAppsMeta, v.Mode, p)
 	fmt.Println("RAW-DATA: ", p)
 	//good
-	w.Header().Set("Content-Type", "application/json")
 	fmt.Fprint(w, string(result))
 }
 
