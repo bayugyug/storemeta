@@ -12,7 +12,7 @@ test : build
 	go test *.go -bench=. -test.benchmem -v 2>/dev/null | gobench2plot > benchmarks.xml
 
 testrun : clean test
-	go test -v -bench=. -benchmem -dummy >> testrun.txt
+	time go test -v -bench=. -benchmem -dummy >> testrun.txt
 
 prepare : build
 	cp storemeta Docker/storemeta

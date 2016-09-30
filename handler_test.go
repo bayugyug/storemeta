@@ -77,8 +77,9 @@ func BenchmarkHandlerParallel(b *testing.B) {
 
 			//show the list saved
 			if len(pAppList) > 0 {
-				fmt.Sprintf("Get Store IDs OK", ANDROID, storeIDList[ANDROID])
-				fmt.Sprintf("Get Store IDs OK", IOS, storeIDList[IOS])
+				fmt.Println()
+				fmt.Println("Get Store IDs OK", ANDROID, storeIDList[ANDROID])
+				fmt.Println("Get Store IDs OK", IOS, storeIDList[IOS])
 			}
 		}
 	})
