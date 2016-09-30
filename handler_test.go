@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 )
@@ -54,4 +55,31 @@ func TestHandler(t *testing.T) {
 		t.Log("Get Store IDs OK", IOS, storeIDList[IOS])
 	}
 
+}
+
+func BenchmarkHandlerParallel(b *testing.B) {
+
+	var pAppsMeta AppsMeta
+
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			//re-init it here, eventhough, its defined @ global.go
+			pAppsData = make(chan *App)
+			pAppList = []*App{}
+			pStores = []*StoreApp{}
+
+			ands := strings.Split(storeIDList[ANDROID], ",")
+			ioss := strings.Split(storeIDList[IOS], ",")
+			queryStoreIds(ands, ioss)
+
+			//show 1x1 per storeid
+			handler(pAppsMeta)
+
+			//show the list saved
+			if len(pAppList) > 0 {
+				fmt.Sprintf("Get Store IDs OK", ANDROID, storeIDList[ANDROID])
+				fmt.Sprintf("Get Store IDs OK", IOS, storeIDList[IOS])
+			}
+		}
+	})
 }
