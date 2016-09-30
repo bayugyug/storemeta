@@ -387,29 +387,14 @@ func dumpW(s ...interface{}) {
 	warnLog.Println(s...)
 }
 
-//dumpWF log into warning w/ fmt
-func dumpWF(format string, s ...interface{}) {
-	warnLog.Println(fmt.Sprintf(format, s...))
-}
-
 //dumpE log into error
 func dumpE(s ...interface{}) {
 	errorLog.Println(s...)
 }
 
-//dumpE log into error w/ fmt
-func dumpEF(format string, s ...interface{}) {
-	errorLog.Println(fmt.Sprintf(format, s...))
-}
-
 //dumpI log into info
 func dumpI(s ...interface{}) {
 	infoLog.Println(s...)
-}
-
-//dumpIF log into info
-func dumpIF(format string, s ...interface{}) {
-	infoLog.Println(fmt.Sprintf(format, s...))
 }
 
 //Write override the log.print
@@ -462,7 +447,10 @@ func showUsage() {
 		./storemeta  -i="544007664,535886823,643496868"
 
 `
-	fmt.Println("Ver:", pVersion, "\n")
+
+	fmt.Println()
+	fmt.Println("Ver:", pVersion)
+	fmt.Println()
 	flag.PrintDefaults()
 	fmt.Println(msg)
 	os.Exit(0)
