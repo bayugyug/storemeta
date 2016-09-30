@@ -1,11 +1,14 @@
 package main
 
 import (
-	"os"
 	"testing"
 )
 
-func TestHandler(t *testing.T) {
-	t.Log("test a")
-	os.Exit(0)
+func TestShowCategory(t *testing.T) {
+
+	var smeta AppsMeta
+
+	showCategory(smeta, IOS, "")
+
+	t.Fatal("test a")
 }

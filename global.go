@@ -243,10 +243,10 @@ func init() {
 
 	//in
 	Formatters = map[string]Formatter{
-		"LIST-CATEGORY-IOS":     {IOS, ShowCategory},
-		"LIST-CATEGORY-ANDROID": {ANDROID, ShowCategory},
-		"CATEGORY-IOS":          {IOS, ShowCategory},
-		"CATEGORY-ANDROID":      {ANDROID, ShowCategory},
+		"LIST-CATEGORY-IOS":     {IOS, showCategory},
+		"LIST-CATEGORY-ANDROID": {ANDROID, showCategory},
+		"CATEGORY-IOS":          {IOS, showCategory},
+		"CATEGORY-ANDROID":      {ANDROID, showCategory},
 	}
 	pAppsData = make(chan *App)
 }
