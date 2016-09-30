@@ -37,7 +37,7 @@ func main() {
 		return
 	}
 	//show 1x1 per storeid
-	handler(pAppsMeta)
+	Handler(pAppsMeta)
 
 	//show the list saved
 	if len(pAppList) > 0 {

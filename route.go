@@ -57,7 +57,7 @@ func formatHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 		}
 
 		//handle the storeids
-		handler(pAppsMeta)
+		Handler(pAppsMeta)
 
 		//show the list saved
 		if len(pAppList) > 0 {

@@ -5,9 +5,21 @@ import (
 	"testing"
 )
 
-var tAppsMeta AppsMeta
+func TestA(t *testing.T) {
+	fmt.Println("test a")
+}
 
-func TestShowCategory(t *testing.T) {
-	fmt.Println("Good!")
-	// Output: Good!
+func TestAB(t *testing.T) {
+	fmt.Println("test ab")
+}
+
+func ExampleB() {
+	fmt.Println("Example")
+	// Output: Example
+}
+
+func BenchmarkHello(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		fmt.Sprintf("hello")
+	}
 }
