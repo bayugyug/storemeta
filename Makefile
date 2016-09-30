@@ -5,11 +5,14 @@ build :
 	CGO_ENABLED=0 GOOS=linux go build -a -tags netgo -installsuffix netgo -installsuffix cgo -v -ldflags "-s -w -X main.pBuildTime=`date -u +%Y%m%d.%H%M%S`" .
 
 test : build
-	go test -v
+	go test *.go > testrun.txt
 	golint > lint.txt
 	go tool vet -v . > vet.txt
-	gocov test | gocov-xml > coverage.xml
-	go test -bench=. -test.benchmem -v | gobench2plot > benchmarks.xml
+	gocov test github.com/bayugyug/storemeta | gocov-xml > coverage.xml
+	go test *.go -bench=. -test.benchmem -v 2>/dev/null | gobench2plot > benchmarks.xml
+
+testrun : clean test
+	go test -v -list-category-android  >> testrun.txt
 
 prepare : build
 	cp storemeta Docker/storemeta
@@ -30,7 +33,7 @@ docker-alpine: prepare
 
 clean:
 	rm -f storemeta Docker/storemeta
-	rm -f benchmarks.xml coverage.xml vet.txt lint.txt
+	rm -f benchmarks.xml coverage.xml vet.txt lint.txt testrun.txt
 
 re: clean all
 

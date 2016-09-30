@@ -32,8 +32,8 @@ func main() {
 		return
 	}
 	//serve http
-	if pHttpServe {
-		initHttpRouters()
+	if pHTTPServe {
+		initHTTPRouters()
 		return
 	}
 	//show 1x1 per storeid

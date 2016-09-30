@@ -25,13 +25,15 @@ const (
 	usageAndroidCategory = "use for querying the list of apps per category in Android App Store"
 	usageIOSCategory     = "use for querying the list of apps per category in IOS App Store"
 	usagePrintFormat     = "use to enable what format is used in showing the output"
-	IOS                  = "IOS"
-	ANDROID              = "ANDROID"
-	usageHttp            = "use to serve the results via HTTP"
-	usageHttpPort        = "use to serve the results via HTTP @ Port No."
+	//IOS device
+	IOS = "IOS"
+	//ANDROID device
+	ANDROID       = "ANDROID"
+	usageHTTP     = "use to serve the results via HTTP"
+	usageHTTPPort = "use to serve the results via HTTP @ Port No."
 )
 
-//Store data holder for ios data
+//StoreApp ... data holder for ios data
 type StoreApp struct {
 	OS       string `json:"os,omitempty"`
 	StoreID  string `json:"store_id,omitempty"`
@@ -41,6 +43,7 @@ type StoreApp struct {
 	URL      string `json:"url,omitempty"`
 }
 
+//App ... meta info holder
 type App struct {
 	Platform        string `json:"platform"`
 	AppURL          string `json:"app-url"`
@@ -65,6 +68,7 @@ type App struct {
 	DeveloperSite   string `json:"developer-site"`
 }
 
+//Formatter ... generic func for different formatting
 type Formatter struct {
 	Mode   string
 	Format func(AppsMeta, string, string) string
@@ -85,8 +89,8 @@ var (
 	pVersion   = "0.1.0" + "-" + pBuildTime
 	//console
 	pShowConsole    = true
-	pAndroidStoreId = ""
-	pIOSStoreId     = ""
+	pAndroidStoreID = ""
+	pIOSStoreID     = ""
 
 	pIOSList     = false
 	pAndroidList = false
@@ -112,9 +116,10 @@ var (
 
 	pAppList []*App
 
-	pHttpPort  = "7777"
-	pHttpServe = false
+	pHTTPPort  = "7777"
+	pHTTPServe = false
 
+	//Formatters ... mapping of all the format funcs
 	Formatters map[string]Formatter
 	pAppsData  chan *App
 	pStores    []*StoreApp
@@ -231,7 +236,6 @@ func init() {
 	//recovery
 	initRecov()
 	//re-fmt logger
-	//overrideLogger("")
 	//evt
 	initEnvParams()
 	//loggers
@@ -293,11 +297,11 @@ func initEnvParams() {
 	flag.BoolVar(&pShowConsole, "debug", pShowConsole, usageShowConsole)
 	flag.BoolVar(&pShowConsole, "d", pShowConsole, usageShowConsole+" (shorthand)")
 
-	flag.StringVar(&pAndroidStoreId, "android", pAndroidStoreId, usageAndroidStore)
-	flag.StringVar(&pAndroidStoreId, "a", pAndroidStoreId, usageAndroidStore+" (shorthand)")
+	flag.StringVar(&pAndroidStoreID, "android", pAndroidStoreID, usageAndroidStore)
+	flag.StringVar(&pAndroidStoreID, "a", pAndroidStoreID, usageAndroidStore+" (shorthand)")
 
-	flag.StringVar(&pIOSStoreId, "ios", pIOSStoreId, usageIOSStore)
-	flag.StringVar(&pIOSStoreId, "i", pIOSStoreId, usageIOSStore+" (shorthand)")
+	flag.StringVar(&pIOSStoreID, "ios", pIOSStoreID, usageIOSStore)
+	flag.StringVar(&pIOSStoreID, "i", pIOSStoreID, usageIOSStore+" (shorthand)")
 
 	flag.BoolVar(&pIOSList, "list-category-ios", pIOSList, usageIOSList)
 	flag.BoolVar(&pIOSList, "li", pIOSList, usageIOSList+" (shorthand)")
@@ -316,8 +320,8 @@ func initEnvParams() {
 
 	flag.BoolVar(&pHelp, "h", pHelp, "Show this help/how-to")
 
-	flag.BoolVar(&pHttpServe, "http", pHttpServe, usageHttp)
-	flag.StringVar(&pHttpPort, "port", pHttpPort, usageHttpPort)
+	flag.BoolVar(&pHTTPServe, "http", pHTTPServe, usageHTTP)
+	flag.StringVar(&pHTTPPort, "port", pHTTPPort, usageHTTPPort)
 
 	flag.Parse()
 
@@ -326,30 +330,30 @@ func initEnvParams() {
 		showUsage()
 	}
 
-	if pIOSStoreId == "" && pAndroidStoreId == "" &&
+	if pIOSStoreID == "" && pAndroidStoreID == "" &&
 		!pIOSList && !pAndroidList &&
 		pIOSCategory == "" && pAndroidCategory == "" &&
-		!pHttpServe {
+		!pHTTPServe {
 		showUsage()
 	}
 
-	if pAndroidStoreId != "" || pIOSStoreId != "" {
-		ands := strings.Split(pAndroidStoreId, ",")
-		ioss := strings.Split(pIOSStoreId, ",")
+	if pAndroidStoreID != "" || pIOSStoreID != "" {
+		ands := strings.Split(pAndroidStoreID, ",")
+		ioss := strings.Split(pIOSStoreID, ",")
 		queryStoreIds(ands, ioss)
 	}
 }
 
-//initHttpRouters, init the routing
-func initHttpRouters() {
+//initHTTPRouters , init the routing
+func initHTTPRouters() {
 	pRouter := httprouter.New()
 	pRouter.GET("/", indexHandler)
 	pRouter.GET("/:mode", formatHandler)
 	pRouter.POST("/:mode", formatHandler)
 	pRouter.GET("/:mode/", formatHandler)
 	pRouter.POST("/:mode/", formatHandler)
-	fmt.Println("Storemeta\n\nVer: "+pVersion+"\n\nReady to serve @ port:", strings.Replace(pHttpPort, ":", "", -1))
-	log.Fatal(http.ListenAndServe(":"+pHttpPort, pRouter))
+	fmt.Println("Storemeta\n\nVer: "+pVersion+"\n\nReady to serve @ port:", strings.Replace(pHTTPPort, ":", "", -1))
+	log.Fatal(http.ListenAndServe(":"+pHTTPPort, pRouter))
 }
 
 //formatLogger try to init all filehandles for logs

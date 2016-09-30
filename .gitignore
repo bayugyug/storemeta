@@ -1,2 +1,7 @@
 storemeta
 Docker/storemeta
+benchmarks.xml
+coverage.xml
+lint.txt
+testrun.txt
+vet.txt

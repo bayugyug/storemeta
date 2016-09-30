@@ -1,50 +1,57 @@
 package main
 
 import (
-	"encoding/json"
-	"flag"
+	"strings"
 	"testing"
 )
 
-func TestShowCategory(t *testing.T) {
+var (
+	categOSes    = []string{IOS, ANDROID}
+	categOSTypes = map[string]string{
+		IOS:     "GAMES_ACTION",
+		ANDROID: "GAME_ACTION",
+	}
+	storeIDList = map[string]string{
+		IOS:     "544007664,535886823,643496868,293622097",
+		ANDROID: "com.google.android.apps.plus,com.google.android.launcher,com.sphero.sprk",
+	}
+)
+
+func TestHandler(t *testing.T) {
 
 	var pAppsMeta AppsMeta
 
-	flag.Parse()
-	//show cat-list
-	if pIOSList {
-		t.Log(showCategory(pAppsMeta, IOS, ""))
-		return
+	for _, os := range categOSes {
+		s := showCategory(pAppsMeta, os, "")
+		if len(s) == 0 {
+			t.Error("Fail showCategory", os)
+		} else {
+			t.Log("showCategory OK", os)
+		}
 	}
-	//show cat-list
-	if pAndroidList {
-		t.Log(showCategory(pAppsMeta, ANDROID, ""))
-		return
+
+	for oss, ost := range categOSTypes {
+		s := showCategory(pAppsMeta, oss, ost)
+		if len(s) == 0 {
+			t.Error("Fail showCategory type", oss, ost)
+		} else {
+			t.Log("showCategory type OK", oss, ost)
+		}
 	}
-	//show 1 categ
-	if len(pIOSCategory) > 0 {
-		t.Log(showCategory(pAppsMeta, IOS, pIOSCategory))
-		return
-	}
-	//show 1 categ
-	if len(pAndroidCategory) > 0 {
-		t.Log(showCategory(pAppsMeta, ANDROID, pAndroidCategory))
-		return
-	}
-	//serve http
-	if pHttpServe {
-		initHttpRouters()
-		return
-	}
+
+	ands := strings.Split(storeIDList[ANDROID], ",")
+	ioss := strings.Split(storeIDList[IOS], ",")
+	queryStoreIds(ands, ioss)
+
 	//show 1x1 per storeid
 	handler(pAppsMeta)
 
 	//show the list saved
-	if len(pAppList) > 0 {
-		//json fmt
-		jdata, _ := json.MarshalIndent(pAppList, "", "\t")
-		//dont leave your friend behind :-)
-		t.Log(string(jdata))
+	if len(pAppList) == 0 {
+		t.Error("Fail getting meta infos.")
+	} else {
+		t.Log("Get Store IDs OK", ANDROID, storeIDList[ANDROID])
+		t.Log("Get Store IDs OK", IOS, storeIDList[IOS])
 	}
 
 }
