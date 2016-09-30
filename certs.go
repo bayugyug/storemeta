@@ -1,5 +1,7 @@
 package main
 
+import ()
+
 var pemCerts = []byte(`
 -----BEGIN CERTIFICATE-----
 MIIDzzCCAregAwIBAgIDAWweMA0GCSqGSIb3DQEBBQUAMIGNMQswCQYDVQQGEwJB

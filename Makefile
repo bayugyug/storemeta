@@ -3,6 +3,7 @@ all: build
 build :
 	go get -v
 	CGO_ENABLED=0 GOOS=linux go build -a -tags netgo -installsuffix netgo -installsuffix cgo -v -ldflags "-s -w -X main.pBuildTime=`date -u +%Y%m%d.%H%M%S`" .
+	go install -v
 
 test : build
 	go test -v
