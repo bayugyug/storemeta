@@ -605,8 +605,8 @@ func (metainfo AppsMeta) PrintList(os, category, url string) []*StoreApp {
 	return storelist
 }
 
-//showCategory shows list of categories or list of apps per category
-func showCategory(metainfo AppsMeta, os, category string) string {
+//ShowCategory shows list of categories or list of apps per category
+func ShowCategory(metainfo AppsMeta, os, category string) string {
 	var jdata []byte
 	if len(category) > 0 {
 		res := metainfo.ShowlistApps(os, category)

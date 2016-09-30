@@ -13,22 +13,22 @@ func main() {
 
 	//show cat-list
 	if pIOSList {
-		fmt.Println(showCategory(pAppsMeta, IOS, ""))
+		fmt.Println(ShowCategory(pAppsMeta, IOS, ""))
 		return
 	}
 	//show cat-list
 	if pAndroidList {
-		fmt.Println(showCategory(pAppsMeta, ANDROID, ""))
+		fmt.Println(ShowCategory(pAppsMeta, ANDROID, ""))
 		return
 	}
 	//show 1 categ
 	if len(pIOSCategory) > 0 {
-		fmt.Println(showCategory(pAppsMeta, IOS, pIOSCategory))
+		fmt.Println(ShowCategory(pAppsMeta, IOS, pIOSCategory))
 		return
 	}
 	//show 1 categ
 	if len(pAndroidCategory) > 0 {
-		fmt.Println(showCategory(pAppsMeta, ANDROID, pAndroidCategory))
+		fmt.Println(ShowCategory(pAppsMeta, ANDROID, pAndroidCategory))
 		return
 	}
 	//serve http
