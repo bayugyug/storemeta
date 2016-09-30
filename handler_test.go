@@ -13,8 +13,8 @@ var (
 		ANDROID: "GAME_ACTION",
 	}
 	storeIDList = map[string]string{
-		IOS:     "544007664,535886823,643496868,293622097",
-		ANDROID: "com.google.android.apps.plus,com.google.android.launcher,com.sphero.sprk",
+		IOS:     "293622097",
+		ANDROID: "com.google.android.apps.plus",
 	}
 )
 
