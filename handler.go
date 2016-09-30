@@ -35,7 +35,7 @@ type AppsMetaInfos interface {
 type AppsMeta struct{}
 
 //handler entry of the app
-func Handler(metainfo AppsMetaInfos) {
+func handler(metainfo AppsMeta) {
 
 	//get task
 	zFlag := make(chan bool)
