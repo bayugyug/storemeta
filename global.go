@@ -25,6 +25,7 @@ const (
 	usageAndroidCategory = "use for querying the list of apps per category in Android App Store"
 	usageIOSCategory     = "use for querying the list of apps per category in IOS App Store"
 	usagePrintFormat     = "use to enable what format is used in showing the output"
+	usageTestingConsole  = "use to enable a dummy flag for testing purposes"
 	//IOS device
 	IOS = "IOS"
 	//ANDROID device
@@ -102,7 +103,7 @@ var (
 	pEnvVars = map[string]*string{
 		"GMONGERS_LDIR": &pLogDir,
 	}
-
+	pTestingConsole = false
 	//print_format
 	pPrintFormat = "json"
 	pHelp        = false
@@ -323,6 +324,7 @@ func initEnvParams() {
 	flag.BoolVar(&pHTTPServe, "http", pHTTPServe, usageHTTP)
 	flag.StringVar(&pHTTPPort, "port", pHTTPPort, usageHTTPPort)
 
+	flag.BoolVar(&pTestingConsole, "dummy", pTestingConsole, usageTestingConsole)
 	flag.Parse()
 
 	//either 1 should be present
@@ -333,7 +335,7 @@ func initEnvParams() {
 	if pIOSStoreID == "" && pAndroidStoreID == "" &&
 		!pIOSList && !pAndroidList &&
 		pIOSCategory == "" && pAndroidCategory == "" &&
-		!pHTTPServe {
+		!pHTTPServe && !pTestingConsole {
 		showUsage()
 	}
 
