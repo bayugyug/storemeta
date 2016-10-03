@@ -30,7 +30,7 @@ RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" && \
     cd $GOSRC/github.com/bayugyug && \
     git clone https://github.com/bayugyug/storemeta.git && \
     cd $GOSRC/github.com/bayugyug/storemeta && \
-    go get -v && CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -v -ldflags "-s -w -X main.pBuildTime=`date -u +%Y%m%d.%H%M%S`" . && \
+    go get -v && CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -v -ldflags "-s -w -X main.pBuildTime=`date +%Y%m%d.%H%M%S`" . && \
     cp -f storemeta $GOBIN/ && \
     chmod +x $GOBIN/* && \
     apk del .build-deps go git gcc musl-dev && \

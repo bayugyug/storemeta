@@ -627,16 +627,20 @@ func getResult(url string) (int, string) {
 		Dial: (&net.Dialer{
 			Timeout: 300 * time.Second,
 		}).Dial,
+		//DisableKeepAlives: true,
 	},
 	}
 	res, err := c.Get(url)
+	//make sure to free-up
+	if res != nil {
+		defer res.Body.Close()
+	}
 	if err != nil {
 		log.Println("ERROR: getResult:", err)
 		return 0, ""
 	}
 	//get response
 	robots, err := ioutil.ReadAll(res.Body)
-	defer res.Body.Close()
 	if err != nil {
 		log.Println("ERROR: getResult:", err)
 		return 0, ""
