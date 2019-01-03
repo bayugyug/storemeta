@@ -5,7 +5,6 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
-	"github.com/PuerkitoBio/goquery"
 	"html"
 	"io/ioutil"
 	"log"
@@ -16,6 +15,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/PuerkitoBio/goquery"
 )
 
 func b(s string) *bufio.Reader { return bufio.NewReader(strings.NewReader(s)) }
@@ -238,15 +239,6 @@ func (metainfo AppsMeta) FormatAndroid(doc *goquery.Document, store *StoreApp) (
 					appsdata.DatePublished = t.Format("2006-01-02") + " 00:00:00"
 				}
 			}
-			//SOFTWARE-VERSION
-			if v.Key == "itemprop" && strings.ToLower(v.Val) == "numdownloads" {
-				sz := strings.SplitN(n.Text(), "-", 2)
-				if len(sz) >= 2 {
-					fr, _ := strconv.Atoi(strings.TrimSpace(strings.Replace(sz[0], ",", "", -1)))
-					to, _ := strconv.Atoi(strings.TrimSpace(strings.Replace(sz[1], ",", "", -1)))
-					appsdata.TotalDownloads = fmt.Sprintf("%d", ((fr + to) / 2))
-				}
-			}
 			//OS
 			if v.Key == "itemprop" && strings.ToLower(v.Val) == "softwareversion" {
 				appsdata.SoftwareVersion = strings.TrimSpace(n.Text())
@@ -276,11 +268,11 @@ func (metainfo AppsMeta) FormatAndroid(doc *goquery.Document, store *StoreApp) (
 //FormatIOS format meta info for Itunes Store
 func (metainfo AppsMeta) FormatIOS(doc *goquery.Document, store *StoreApp) (appsdata *App) {
 
+	tmpf1 := []string{}
+	tmpf2 := []string{}
 	//init
 	appsdata = &App{AppID: store.StoreID, AppURL: store.URL, Platform: store.OS}
 
-	//ITUNES
-	datePubFmt := "Jan 2, 2006"
 	//TITLE
 	doc.Find("title").Each(func(i int, n *goquery.Selection) {
 		appsdata.Title = strings.TrimSpace(n.Text())
@@ -296,137 +288,133 @@ func (metainfo AppsMeta) FormatIOS(doc *goquery.Document, store *StoreApp) (apps
 	})
 	appsdata.Title = strings.TrimSpace(appsdata.Title)
 	//DESC
-	doc.Find("p").Each(func(i int, n *goquery.Selection) {
-		for _, v := range n.Nodes[0].Attr {
-			if v.Key == "itemprop" && v.Val == "description" {
-				appsdata.Description = strings.TrimSpace(n.Text())
-				return
-			}
+	descT := 0
+	doc.Find("span.we-clamp__contents").Each(func(i int, n *goquery.Selection) {
+		descT++
+		if descT < 3 {
+			appsdata.Description += strings.TrimSpace(n.Text())
 		}
-	})
-	//BADGE
-	doc.Find("div.fat-binary-blurb").Each(func(i int, n *goquery.Selection) {
-		appsdata.Badge = strings.TrimSpace(n.Text())
 		return
 	})
-	//RATINGS-PER
-	totr8 := 0
-	pstars := []string{}
-	doc.Find("div.rating span.rating-count").Each(func(i int, n *goquery.Selection) {
-		prate := strings.Replace(n.Text(), "Ratings", "", -1)
-		prate = strings.TrimSpace(strings.Replace(prate, ",", "", -1))
-		pstars = append(pstars, prate)
-		rx, _ := strconv.Atoi(prate)
-		totr8 += rx
+	//BADGE
+	tmpf1 = []string{}
+	tmpf2 = []string{}
+	doc.Find("dt.information-list__item__term").Each(func(i int, n *goquery.Selection) {
+		tmpf1 = append(tmpf1, strings.TrimSpace(n.Text()))
+		return
 	})
-	//TOTAL DL
-	appsdata.RatingPerStar = strings.Join(pstars[:], ",")
-	appsdata.RatingTotal = fmt.Sprintf("%d", totr8)
-	appsdata.TotalDownloads = fmt.Sprintf("%d", (10 * totr8))
+	doc.Find("dd.information-list__item__definition").Each(func(i int, n *goquery.Selection) {
+		tmpf2 = append(tmpf2, strings.TrimSpace(n.Text()))
+		return
+	})
+
+	//DEVELOPER
+	if len(tmpf2) >= 1 {
+		appsdata.Developer = tmpf2[0]
+	}
+
+	//BADGE
+	if len(tmpf2) >= 4 {
+		appsdata.Badge = tmpf2[3]
+		appsdata.SoftwareOs = tmpf2[3]
+	}
+	//GENRE
+	if len(tmpf2) >= 3 {
+		appsdata.Genre = tmpf2[2]
+	}
+	//FILE-SIZE
+	if len(tmpf2) >= 2 {
+		appsdata.FileSize = tmpf2[1]
+	}
+	//PRICE
+	if len(tmpf2) >= 8 {
+		appsdata.SoftwarePrice = tmpf2[7]
+	}
+	//CONTENT-RATING
+	if len(tmpf2) >= 6 {
+		appsdata.ContentRating = tmpf2[5]
+	}
+	//RATING-DESC
+	doc.Find("div.we-customer-ratings__count").Each(func(i int, n *goquery.Selection) {
+		appsdata.RatingDesc = strings.TrimSpace(n.Text())
+		appsdata.RatingTotal = strings.Replace(appsdata.RatingDesc, "Ratings", "", -1)
+		appsdata.RatingTotal = strings.Replace(appsdata.RatingTotal, " ", "", -1)
+		return
+	})
+	//RATING-VALUE
+	doc.Find("span.we-customer-ratings__averages__display").Each(func(i int, n *goquery.Selection) {
+		appsdata.RatingValue = strings.TrimSpace(n.Text())
+		return
+	})
 	//RATING-STAR
 	stars := []string{}
-	doc.Find("div.rating").Each(func(i int, n *goquery.Selection) {
+	starsT := 5
+	doc.Find("div.we-star-bar-graph__bar__foreground-bar").Each(func(i int, n *goquery.Selection) {
 		for _, v := range n.Nodes[0].Attr {
-			if v.Key == "itemprop" && v.Val == "aggregateRating" {
-				strr, _ := n.Attr("aria-label")
+			if v.Key == "style" {
+				strr, _ := n.Attr("style")
+				strr = strings.Replace(strr, "width:", fmt.Sprintf("%d Star is ", starsT), -1)
 				stars = append(stars, strr)
+				starsT--
 			}
 		}
 	})
-	appsdata.RatingDesc = strings.Join(stars[:], "\n")
+	appsdata.RatingPerStar = strings.Join(stars[:], " ")
+	//TOTAL-DOWNLOADS
+	totald := 0.0
+	if strings.Contains(appsdata.RatingTotal, "K") {
+		totalStr := strings.Replace(appsdata.RatingTotal, "K", "", -1)
+
+		if s, err := strconv.ParseFloat(totalStr, 64); err == nil {
+			totald = s * 1000
+		}
+	} else if strings.Contains(appsdata.RatingTotal, "M") {
+		totalStr := strings.Replace(appsdata.RatingTotal, "M", "", -1)
+
+		if s, err := strconv.ParseFloat(totalStr, 64); err == nil {
+			totald = s * 1000000
+		}
+	} else {
+		if s, err := strconv.ParseFloat(appsdata.RatingTotal, 64); err == nil {
+			totald = s * 1.0
+		}
+
+	}
+
+	//TOTAL DL
+	appsdata.TotalDownloads = fmt.Sprintf("%.0f", (10 * totald))
+
+	//DATE-PUBLISHED
+	dt := 0
+	doc.Find("time.version-history__item__release-date").Each(func(i int, n *goquery.Selection) {
+		if dt < 1 {
+			appsdata.DatePublished = strings.TrimSpace(n.Text())
+		}
+		dt++
+		return
+	})
+
 	//META
 	metas := []string{}
 	doc.Find("ol.list").Find("span").Each(func(i int, n *goquery.Selection) {
 		metas = append(metas, strings.TrimSpace(n.Text()))
 	})
 	appsdata.MetaDesc = strings.TrimSpace(strings.Join(metas[:], "\n"))
+
 	//DEVELOPER INFO
-	doc.Find("div.app-links").Find("a").Each(func(i int, n *goquery.Selection) {
+	dt = 0
+	doc.Find("li.link-list__item").Find("a.link").Each(func(i int, n *goquery.Selection) {
 		for _, v := range n.Nodes[0].Attr {
 			if v.Key == "href" {
-				if len(appsdata.DeveloperSite) == 0 {
-					appsdata.DeveloperSite = strings.TrimSpace(html.UnescapeString(v.Val))
+				if dt < 1 {
+					appsdata.DeveloperSite = strings.TrimSpace(v.Val)
 				}
+				dt++
 				break
 			}
 		}
+		return
 	})
-	//AUTHOR
-	doc.Find("span").Each(func(i int, n *goquery.Selection) {
-		for _, v := range n.Nodes[0].Attr {
-			//AUTHOR
-			if v.Key == "itemprop" && v.Val == "name" {
-				appsdata.Developer = strings.TrimSpace(n.Text())
-			}
-			//DATE
-			if v.Key == "itemprop" && v.Val == "datePublished" {
-				t, e := time.Parse(datePubFmt, strings.TrimSpace(n.Text()))
-				if e == nil {
-					appsdata.DatePublished = t.Format("2006-01-02") + " 00:00:00"
-				}
-			}
-			//GENRE
-			if v.Key == "itemprop" && v.Val == "applicationCategory" {
-				appsdata.Genre = html.UnescapeString(strings.ToUpper(strings.TrimSpace(n.Text())))
-			}
-			//SOFTWARE-VERSION
-			if v.Key == "itemprop" && v.Val == "softwareVersion" {
-				appsdata.SoftwareVersion = strings.TrimSpace(n.Text())
-			}
-			//OS
-			if v.Key == "itemprop" && v.Val == "operatingSystem" {
-				appsdata.SoftwareOs = strings.TrimSpace(n.Text())
-			}
-			//RATINGS
-			if v.Key == "itemprop" && v.Val == "ratingValue" {
-				appsdata.RatingValue = strings.TrimSpace(n.Text())
-			}
-		}
-	})
-	//GENRE
-	doc.Find("a.genre").Each(func(i int, n *goquery.Selection) {
-		for _, v := range n.Nodes[0].Attr {
-			//GENRE
-			if v.Key == "href" && strings.ContainsAny(v.Val, "https://itunes.apple.com/") && strings.ContainsAny(v.Val, "/genre/") {
-				genres := strings.Split(strings.TrimSpace(v.Val), "/")
-				if len(genres) >= 6 {
-					appsdata.Genre = html.UnescapeString(strings.Replace(strings.ToUpper(genres[5]), "IOS-", "", -1))
-				}
-			}
-		}
-	})
-	//PRICE
-	doc.Find("div").Each(func(i int, n *goquery.Selection) {
-		for _, v := range n.Nodes[0].Attr {
-			if v.Key == "itemprop" && v.Val == "price" {
-				appsdata.SoftwarePrice = strings.TrimSpace(n.Text())
-				return
-			}
-		}
-	})
-	//SIZE
-	re := regexp.MustCompile("[^0-9\\.]+")
-	doc.Find("div#left-stack").Find("li").Each(func(i int, n *goquery.Selection) {
-		if s := strings.TrimSpace(n.Text()); strings.Contains(s, "Size:") {
-			sz := strings.SplitN(s, ":", 2)
-			if len(sz) > 1 {
-				sbytes := re.ReplaceAllString(strings.TrimSpace(sz[1]), "")
-				appsdata.FileSize = strings.TrimSpace(sbytes)
-				return
-			}
-		}
-	})
-	//SUB-DESC
-	smeta := []string{}
-	doc.Find("ul.list").Each(func(i int, n *goquery.Selection) {
-		for _, v := range n.Nodes[0].Attr {
-			if v.Key == "class" && strings.Contains(v.Val, "app-rating-reasons") {
-				smeta = append(smeta, strings.TrimSpace(n.Text()))
-			}
-		}
-
-	})
-	appsdata.MetaDesc = strings.TrimSpace(strings.Join(smeta[:], "\n"))
 	//APP-RATING
 	doc.Find("div.app-rating").Each(func(i int, n *goquery.Selection) {
 		appsdata.ContentRating = strings.TrimSpace(n.Text())
