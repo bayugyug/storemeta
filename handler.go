@@ -116,95 +116,111 @@ func (metainfo AppsMeta) Process(doneFlg chan bool, wg *sync.WaitGroup, idx int,
 //FormatAndroid meta info formatting for Android Playstore
 func (metainfo AppsMeta) FormatAndroid(doc *goquery.Document, store *StoreApp) (appsdata *App) {
 
+	tmpf3 := make(map[string]string)
+
 	//init
 	appsdata = &App{AppID: store.StoreID, AppURL: store.URL, Platform: store.OS}
 
 	//PLAYSTORE
 	datePubFmt := "2 January 2006"
 
+	//META
+	doc.Find("meta").Each(func(i int, n *goquery.Selection) {
+		for _, v := range n.Nodes[0].Attr {
+			if v.Key == "itemprop" {
+				ru, _ := n.Attr("itemprop")
+				rv, _ := n.Attr("content")
+				tmpf3[ru] = strings.Replace(strings.TrimSpace(rv), "\\n", "\n", -1)
+			}
+		}
+	})
+
+	//GENRE
+	for mk, mv := range tmpf3 {
+		switch mk {
+		case "applicationCategory":
+			appsdata.Genre = mv
+		case "price":
+			appsdata.SoftwarePrice = mv
+			if appsdata.SoftwarePrice == "0" {
+				appsdata.SoftwarePrice = "Free"
+			}
+		case "ratingValue":
+			appsdata.RatingValue = mv
+		case "reviewCount":
+			appsdata.RatingTotal = mv
+		case "contentRating":
+			appsdata.ContentRating = mv
+		case "description":
+			appsdata.Description = mv
+		}
+	}
+
+	tmpf1 := []string{}
+	tmpf3 = make(map[string]string)
+
+	//MORE
+	doc.Find("span.htlgb").Each(func(i int, n *goquery.Selection) {
+		s := strings.TrimSpace(n.Text())
+		if _, ok := tmpf3[s]; !ok {
+			tmpf1 = append(tmpf1, s)
+		}
+		tmpf3[s] = s
+		return
+	})
+	//DATEPUBLISHED
+	if len(tmpf1) >= 1 {
+		appsdata.DatePublished = tmpf1[0]
+	}
+	//SOFTWAREOS
+	if len(tmpf1) >= 2 {
+		appsdata.SoftwareOs = tmpf1[1]
+		appsdata.Badge = tmpf1[1]
+	}
+	//TOTALDOWNLOADS
+	if len(tmpf1) >= 3 {
+		appsdata.TotalDownloads = tmpf1[2]
+	}
+	//DEVELOPER
+	if len(tmpf1) >= 7 {
+		appsdata.Developer = tmpf1[6]
+	}
+
+	tmpf1 = []string{}
+	//META
+	doc.Find("a.hrTbp").Each(func(i int, n *goquery.Selection) {
+		for _, v := range n.Nodes[0].Attr {
+			if v.Key == "href" {
+				ru, _ := n.Attr("href")
+				tmpf1 = append(tmpf1, ru)
+			}
+		}
+	})
+
+	//DEVELOPER::SITE
+	if len(tmpf1) >= 3 {
+		appsdata.DeveloperSite = tmpf1[2]
+	}
+
+	tmpf1 = []string{}
+	//MORE META
+	m := 5
+	doc.Find("span.L2o20d").Each(func(i int, n *goquery.Selection) {
+		for _, v := range n.Nodes[0].Attr {
+			if v.Key == "style" && m > 0 {
+				rv, _ := n.Attr("title")
+				tmpf1 = append(tmpf1, fmt.Sprintf("%d Star is %s", m, rv))
+				m--
+			}
+		}
+	})
+
+	appsdata.RatingPerStar = strings.Join(tmpf1[:], "; ")
+
 	//TITLE
 	doc.Find("title#main-title").Each(func(i int, n *goquery.Selection) {
 		appsdata.Title = strings.TrimSpace(n.Text())
 		return
-	})
-	//AUTHOR
-	doc.Find("span").Each(func(i int, n *goquery.Selection) {
-		for _, v := range n.Nodes[0].Attr {
-			//AUTHOR
-			if v.Key == "itemprop" && v.Val == "name" {
-				appsdata.Developer = strings.TrimSpace(n.Text())
-			}
-			//GENRE
-			if v.Key == "itemprop" && v.Val == "genre" {
-				appsdata.Genre = html.UnescapeString(strings.ToUpper(strings.TrimSpace(n.Text())))
-			}
-		}
-	})
-	//GENRE
-	doc.Find("a.document-subtitle").Each(func(i int, n *goquery.Selection) {
-		for _, v := range n.Nodes[0].Attr {
-			//GENRE
-			if v.Key == "href" && strings.ContainsAny(v.Val, "/store/apps/category") {
-				genres := strings.Split(strings.TrimSpace(v.Val), "/")
-				if len(genres) >= 5 {
-					appsdata.Genre = html.UnescapeString(strings.ToUpper(genres[4]))
-				}
-				return
-			}
-		}
-	})
-	//DESC
-	doc.Find("div.show-more-content").Each(func(i int, n *goquery.Selection) {
-		appsdata.Description = strings.TrimSpace(n.Text())
-		return
-	})
-	//BADGE
-	doc.Find("span.badge-title").Each(func(i int, n *goquery.Selection) {
-		appsdata.Badge = strings.TrimSpace(n.Text())
-		return
-	})
-	//RATINGS
-	doc.Find("span.reviews-num").Each(func(i int, n *goquery.Selection) {
-		rtotal := strings.Replace(n.Text(), ",", "", -1)
-		appsdata.RatingTotal = rtotal
-		return
-	})
-	//RATINGS-PER-STAR
-	pstars := []string{}
-	doc.Find("span.bar-number").Each(func(i int, n *goquery.Selection) {
-		ptotal := strings.Replace(n.Text(), ",", "", -1)
-		pstars = append(pstars, ptotal)
-	})
-	appsdata.RatingPerStar = strings.Join(pstars[:], ",")
-	//RATING-STAR
-	xstar := make(map[string]string)
-	stars := []string{}
-	doc.Find("div.tiny-star").Each(func(i int, n *goquery.Selection) {
-		for _, v := range n.Nodes[0].Attr {
-			if v.Key == "aria-label" {
-				if cstr, _ := n.Attr("class"); cstr == "tiny-star star-rating-non-editable-container" {
-					s := strings.TrimSpace(strings.Replace(v.Val, ",", "", -1))
-					if _, ok := xstar[s]; !ok {
-						stars = append(stars, s)
-						xstar[s] = s
-					}
-				}
-			}
-		}
-	})
-	appsdata.RatingDesc = strings.Join(stars[:], "\n")
-	//META
-	doc.Find("meta").Each(func(i int, n *goquery.Selection) {
-		for _, v := range n.Nodes[0].Attr {
-			if v.Key == "itemprop" && strings.ToLower(v.Val) == "ratingvalue" {
-				rv, _ := n.Attr("content")
-				appsdata.RatingValue = strings.TrimSpace(rv)
-			}
-			if v.Key == "itemprop" && strings.ToLower(v.Val) == "price" {
-				rv, _ := n.Attr("content")
-				appsdata.SoftwarePrice = strings.TrimSpace(rv)
-			}
-		}
 	})
 	//META-DESC
 	doc.Find("div.meta-info").Each(func(i int, n *goquery.Selection) {
