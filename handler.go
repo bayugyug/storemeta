@@ -504,7 +504,7 @@ func (metainfo AppsMeta) ShowCategories(os string) []string {
 			if strings.EqualFold(pPrintFormat, "json") {
 				categlist = append(categlist, categ)
 			} else {
-				categlist = append(categlist, fmt.Sprintf("%d. %s\n", t, categ))
+				categlist = append(categlist, fmt.Sprintf("%d. %s", t, categ))
 			}
 		}
 	}
