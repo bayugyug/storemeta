@@ -121,9 +121,6 @@ func (metainfo AppsMeta) FormatAndroid(doc *goquery.Document, store *StoreApp) (
 	//init
 	appsdata = &App{AppID: store.StoreID, AppURL: store.URL, Platform: store.OS}
 
-	//PLAYSTORE
-	datePubFmt := "2 January 2006"
-
 	//META
 	doc.Find("meta").Each(func(i int, n *goquery.Selection) {
 		for _, v := range n.Nodes[0].Attr {
@@ -160,7 +157,7 @@ func (metainfo AppsMeta) FormatAndroid(doc *goquery.Document, store *StoreApp) (
 	tmpf3 = make(map[string]string)
 
 	//MORE
-	doc.Find("span.htlgb").Each(func(i int, n *goquery.Selection) {
+	doc.Find("div.BgcNfc").Each(func(i int, n *goquery.Selection) {
 		s := strings.TrimSpace(n.Text())
 		if _, ok := tmpf3[s]; !ok {
 			tmpf1 = append(tmpf1, s)
@@ -168,22 +165,54 @@ func (metainfo AppsMeta) FormatAndroid(doc *goquery.Document, store *StoreApp) (
 		tmpf3[s] = s
 		return
 	})
-	//DATEPUBLISHED
-	if len(tmpf1) >= 1 {
-		appsdata.DatePublished = tmpf1[0]
+
+	tmpf2 := []string{}
+	tmpf3 = make(map[string]string)
+	doc.Find("span.htlgb").Each(func(i int, n *goquery.Selection) {
+		s := strings.TrimSpace(n.Text())
+		if _, ok := tmpf3[s]; !ok {
+			tmpf2 = append(tmpf2, s)
+		}
+		tmpf3[s] = s
+		return
+	})
+
+	//META
+	tmpf3 = make(map[string]string)
+	if len(tmpf1) == len(tmpf2) {
+		for kk, vv := range tmpf1 {
+			tmpf3[vv] = tmpf2[kk]
+		}
 	}
-	//SOFTWAREOS
-	if len(tmpf1) >= 2 {
-		appsdata.SoftwareOs = tmpf1[1]
-		appsdata.Badge = tmpf1[1]
+	if false {
+		var jdata []byte
+		jdata, _ = json.MarshalIndent(tmpf3, "", "\t")
+		log.Println(len(tmpf3), string(jdata))
 	}
-	//TOTALDOWNLOADS
-	if len(tmpf1) >= 3 {
-		appsdata.TotalDownloads = tmpf1[2]
-	}
-	//DEVELOPER
-	if len(tmpf1) >= 7 {
-		appsdata.Developer = tmpf1[6]
+	//META INFOS
+	for mk, mv := range tmpf3 {
+		switch mk {
+		case "Updated":
+			appsdata.DatePublished = mv
+		case "In-app Products":
+			appsdata.SoftwarePrice = mv
+			if appsdata.SoftwarePrice == "0" {
+				appsdata.SoftwarePrice = "Free"
+			}
+		case "Offered By":
+			appsdata.Developer = mv
+		case "Size":
+			appsdata.FileSize = mv
+		case "Content Rating":
+			appsdata.ContentRating = strings.Replace(mv, `+Learn More`, "", -1)
+		case "Current Version":
+			appsdata.SoftwareVersion = mv
+		case "Installs":
+			appsdata.TotalDownloads = mv
+		case "Requires Android":
+			appsdata.SoftwareOs = mv
+			appsdata.Badge = mv
+		}
 	}
 
 	tmpf1 = []string{}
@@ -232,36 +261,6 @@ func (metainfo AppsMeta) FormatAndroid(doc *goquery.Document, store *StoreApp) (
 		for _, v := range n.Nodes[0].Attr {
 			if v.Key == "href" && strings.Contains(v.Val, "http") {
 				appsdata.DeveloperSite = strings.TrimSpace(html.UnescapeString(v.Val))
-			}
-		}
-	})
-	//CONTENT
-	re := regexp.MustCompile("[^0-9\\.]+")
-	doc.Find("div.content").Each(func(i int, n *goquery.Selection) {
-		for _, v := range n.Nodes[0].Attr {
-			//AUTHOR
-			if v.Key == "itemprop" && strings.ToLower(v.Val) == "contentrating" {
-				appsdata.ContentRating = strings.TrimSpace(n.Text())
-			}
-			//DATE
-			if v.Key == "itemprop" && strings.ToLower(v.Val) == "filesize" {
-				sbytes := re.ReplaceAllString(strings.TrimSpace(n.Text()), "")
-				appsdata.FileSize = strings.TrimSpace(sbytes)
-			}
-			//GENRE
-			if v.Key == "itemprop" && strings.ToLower(v.Val) == "datepublished" {
-				t, e := time.Parse(datePubFmt, strings.TrimSpace(n.Text()))
-				if e == nil {
-					appsdata.DatePublished = t.Format("2006-01-02") + " 00:00:00"
-				}
-			}
-			//OS
-			if v.Key == "itemprop" && strings.ToLower(v.Val) == "softwareversion" {
-				appsdata.SoftwareVersion = strings.TrimSpace(n.Text())
-			}
-			//RATINGS
-			if v.Key == "itemprop" && strings.ToLower(v.Val) == "operatingsystems" {
-				appsdata.SoftwareOs = strings.TrimSpace(n.Text())
 			}
 		}
 	})
