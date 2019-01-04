@@ -403,9 +403,8 @@ $ ./storemeta -category-android=FAMILY_AGE_AGE_RANGE1
         Rating-Total x 10
 
 - [x] Android Total Downloads is calculated :
-        Average of Numdownloads which is 
     
-        ( NumDownloads From + NumDownloads To )  / 2
+        ( As Is in "Installs" )
 
 
 ## Docker Binary
