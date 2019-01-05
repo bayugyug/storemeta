@@ -167,25 +167,27 @@ func (metainfo AppsMeta) FormatAndroid(doc *goquery.Document, store *StoreApp) (
 	})
 
 	tmpf2 := []string{}
-	tmpf3 = make(map[string]string)
-	tmpf4 := 0
 	doc.Find("span.htlgb").Each(func(i int, n *goquery.Selection) {
-		s := strings.TrimSpace(n.Text())
-		if _, ok := tmpf3[s]; !ok {
-			tmpf2 = append(tmpf2, s)
-		} else if s == "Varies with device" {
-			tmpf4++
-			if tmpf4 < 3 {
-				tmpf2 = append(tmpf2, s)
-			}
-		}
-		tmpf3[s] = s
+		tmpf2 = append(tmpf2, strings.TrimSpace(n.Text()))
 		return
 	})
 
+	//MATCH INFOS
+	tmpf4 := []string{}
+	if len(tmpf2)/2 == len(tmpf1) {
+		mt := 0
+		for _, _ = range tmpf1 {
+			mt += 2
+			tmpf4 = append(tmpf4, tmpf2[mt-1])
+		}
+		if len(tmpf1) == len(tmpf4) {
+			tmpf2 = tmpf4
+		}
+	}
+
 	if false {
-		jdat, _ := json.MarshalIndent(tmpf3, "", "\t")
-		log.Println(len(tmpf3), string(jdat))
+		jdat, _ := json.MarshalIndent(tmpf4, "", "\t")
+		log.Println(len(tmpf4), string(jdat))
 	}
 
 	//META
