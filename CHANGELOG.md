@@ -9,3 +9,8 @@
 - reduce the docker image file size
 
 
+###storemeta 1.0beta0.3 , 2019-01-05
+
+- Update the parsers for the IOS/ANDROID , since they've change a lot on their templates
+
+

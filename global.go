@@ -4,7 +4,6 @@ import (
 	"crypto/x509"
 	"flag"
 	"fmt"
-	"github.com/julienschmidt/httprouter"
 	"io"
 	"log"
 	"math/rand"
@@ -14,6 +13,8 @@ import (
 	"regexp"
 	"strings"
 	"time"
+
+	"github.com/julienschmidt/httprouter"
 )
 
 const (
@@ -87,7 +88,7 @@ var (
 	pStillRunning = true
 
 	pBuildTime = "0"
-	pVersion   = "0.1.0" + "-" + pBuildTime
+	pVersion   = "0.1.3" + "-" + pBuildTime
 	//console
 	pShowConsole    = true
 	pAndroidStoreID = ""
