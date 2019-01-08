@@ -50,6 +50,7 @@ build:
   services:
     - docker:dind
   script:
+    - echo ${PACKAGE_DEV_IMG}
     - echo ${PACKAGE_PROD_IMG}
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
     - docker build -t ${PACKAGE_IMG} -f Dockerfile.gitlab .
