@@ -416,9 +416,9 @@ $ ./storemeta -category-android=FAMILY_AGE_AGE_RANGE1
 
     sudo  sysctl -w net.ipv4.ip_forward=1
 
-    sudo  docker run --rm  bayugyug/storemeta -h
+    sudo  docker run --rm  registry.hub.docker.com/bayugyug/storemeta -h
 
-    sudo  docker run --rm  bayugyug/storemeta -i="293622097"
+    sudo  docker run --rm  registry.gitlab.com/bayugyug/storemeta -h
 
 ```
 
@@ -433,7 +433,9 @@ $ ./storemeta -category-android=FAMILY_AGE_AGE_RANGE1
 
     sudo  sysctl -w net.ipv4.ip_forward=1
 
-    sudo  docker run -p 7000-8000:7000-8000 -v `pwd`:`pwd` -w `pwd` -d --name storemeta-alpine  bayugyug/storemeta:alpine --http --port 7778
+    sudo  docker run -p 7000-8000:7000-8000 -v `pwd`:`pwd` -w `pwd` -d --name storemeta-latest  registry.hub.docker.com/bayugyug/storemeta:latest --http --port 7778
+
+    sudo  docker run -p 7000-8000:7000-8000 -v `pwd`:`pwd` -w `pwd` -d --name storemeta-latest  registry.gitlab.com/bayugyug/storemeta:latest --http --port 7778
 
     curl -i -v 'http://127.0.0.1:7778/list-category-android'
 
@@ -450,3 +452,4 @@ $ ./storemeta -category-android=FAMILY_AGE_AGE_RANGE1
 ### License
 
 [MIT](https://bayugyug.mit-license.org/)
+
