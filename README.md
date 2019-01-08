@@ -407,7 +407,7 @@ $ ./storemeta -category-android=FAMILY_AGE_AGE_RANGE1
         ( As Is in "Installs" )
 
 
-## Docker Binary
+## Docker Binary  (https://registry.hub.docker.com)
 
 - [x] In order to  use it as dockerize binary
 
@@ -418,11 +418,18 @@ $ ./storemeta -category-android=FAMILY_AGE_AGE_RANGE1
 
     sudo  docker run --rm  registry.hub.docker.com/bayugyug/storemeta -h
 
+```
+
+## Docker Binary  (https://registry.gitlab.com)
+
+
+```sh
+
+    sudo  sysctl -w net.ipv4.ip_forward=1
+
     sudo  docker run --rm  registry.gitlab.com/bayugyug/storemeta -h
 
 ```
-
-
 
 ## As HTTP Server
 
