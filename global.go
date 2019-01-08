@@ -248,18 +248,19 @@ func init() {
 		"CATEGORY-ANDROID":      {ANDROID, showCategory},
 	}
 	pAppsData = make(chan *App)
-}
-
-//initHanlder specific initializatoin
-func initHanlder() {
 	//recovery
 	initRecov()
-	//evt
-	initEnvParams()
 	//loggers
 	initLogger(os.Stdout, os.Stdout, os.Stderr)
 	//http
 	httpInit()
+
+}
+
+//initHanlder specific initializatoin
+func initHanlder() {
+	//evt
+	initEnvParams()
 }
 
 //initRecov is for dumpIng segv in
