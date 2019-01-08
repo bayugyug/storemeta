@@ -8,7 +8,8 @@ WORKDIR /go/src/storemeta
 
 COPY . .
 
-RUN go get -v && CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -v -ldflags "-s -w -X main.pBuildTime=`date +%Y%m%d.%H%M%S`" -o storemeta
+RUN go build -tags netgo -installsuffix netgo -installsuffix cgo -v -ldflags "-s -w -X main.pBuildTime=`date -u +%Y%m%d.%H%M%S`" -o storemeta
+
 
 FROM alpine:3.7
 
