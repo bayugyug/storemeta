@@ -232,17 +232,10 @@ var pCategories = map[string][]string{
 	},
 }
 
+//init system main entry initializatoin
 func init() {
 	//uniqueness
 	rand.Seed(time.Now().UnixNano())
-	//recovery
-	initRecov()
-	//re-fmt logger
-	//evt
-	initEnvParams()
-	//loggers
-	initLogger(os.Stdout, os.Stdout, os.Stderr)
-
 	//init certs
 	pool = x509.NewCertPool()
 	pool.AppendCertsFromPEM(pemCerts)
@@ -255,6 +248,16 @@ func init() {
 		"CATEGORY-ANDROID":      {ANDROID, showCategory},
 	}
 	pAppsData = make(chan *App)
+}
+
+//initHanlder specific initializatoin
+func initHanlder() {
+	//recovery
+	initRecov()
+	//evt
+	initEnvParams()
+	//loggers
+	initLogger(os.Stdout, os.Stdout, os.Stderr)
 }
 
 //initRecov is for dumpIng segv in

@@ -8,6 +8,9 @@ import (
 
 func main() {
 
+	//init
+	initHanlder()
+
 	//empty struct that implements
 	var pAppsMeta AppsMeta
 

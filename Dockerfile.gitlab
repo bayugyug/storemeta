@@ -1,0 +1,17 @@
+FROM golang:1.10-alpine3.7 as build
+
+#auth
+MAINTAINER bayugyug<bayugyug@gmail.com>
+
+
+WORKDIR /go/src/storemeta
+
+COPY . .
+
+RUN go get -v && CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -v -ldflags "-s -w -X main.pBuildTime=`date +%Y%m%d.%H%M%S`" -o storemeta
+
+FROM alpine:3.7
+
+COPY --from=build /go/src/storemeta/storemeta /usr/local/bin/storemeta
+
+ENTRYPOINT ["/usr/local/bin/storemeta"]
