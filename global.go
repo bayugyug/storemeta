@@ -258,6 +258,8 @@ func initHanlder() {
 	initEnvParams()
 	//loggers
 	initLogger(os.Stdout, os.Stdout, os.Stderr)
+	//http
+	httpInit()
 }
 
 //initRecov is for dumpIng segv in

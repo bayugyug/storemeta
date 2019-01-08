@@ -2,19 +2,14 @@ package main
 
 import (
 	"bufio"
-	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"html"
-	"io/ioutil"
 	"log"
-	"net"
-	"net/http"
 	"regexp"
 	"strconv"
 	"strings"
 	"sync"
-	"time"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -642,30 +637,12 @@ func showCategory(metainfo AppsMeta, os, category string) string {
 
 //getResult http req a url
 func getResult(url string) (int, string) {
-	//client
-	c := &http.Client{Transport: &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: true, RootCAs: pool},
-		Dial: (&net.Dialer{
-			Timeout: 300 * time.Second,
-		}).Dial,
-		//DisableKeepAlives: true,
-	},
-	}
-	res, err := c.Get(url)
-	//make sure to free-up
-	if res != nil {
-		defer res.Body.Close()
-	}
-	if err != nil {
-		log.Println("ERROR: getResult:", err)
-		return 0, ""
-	}
+	body, code, err := httpGet(url, map[string]string{})
 	//get response
-	robots, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		log.Println("ERROR: getResult:", err)
 		return 0, ""
 	}
 	//give
-	return res.StatusCode, string(robots)
+	return code, string(body)
 }
