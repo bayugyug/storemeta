@@ -20,7 +20,7 @@ RUN apt-get update  -y && \
     cd $GOSRC/github.com/bayugyug/storemeta && \
     go get -v && go build -tags netgo -installsuffix netgo -installsuffix cgo -v -ldflags "-s -w -X main.pBuildTime=`date +%Y%m%d.%H%M%S`" . && \
     cd $GOSRC && go install github.com/bayugyug/storemeta && \
-    cd $GOSRC/github.com/bayugyug/storemeta && \ 
+    cd $GOSRC/github.com/bayugyug/storemeta && \
     cp -f Docker/cleanup.sh $GOPATH/bin/ && \
     chmod +x $GOPATH/bin/* && \
     $GOPATH/bin/cleanup.sh
