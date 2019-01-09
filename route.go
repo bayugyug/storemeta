@@ -3,10 +3,11 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/julienschmidt/httprouter"
 	"net/http"
 	"regexp"
 	"strings"
+
+	"github.com/julienschmidt/httprouter"
 )
 
 func indexHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -74,7 +75,6 @@ func formatHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 		p = ""
 	}
 	result := v.Format(pAppsMeta, v.Mode, p)
-	fmt.Println("RAW-DATA: ", p)
 	//good
 	fmt.Fprint(w, string(result))
 }
