@@ -640,7 +640,7 @@ func getResult(url string) (int, string) {
 	body, code, err := httpGet(url, map[string]string{})
 	//get response
 	if err != nil {
-		log.Println("ERROR: getResult:", err)
+		//log.Println("ERROR: getResult:", err)
 		return 0, ""
 	}
 	//give
